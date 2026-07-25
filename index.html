@@ -1,830 +1,383 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ARTIC MARKET — Fresh Farmers Market Experience</title>
-  
-  <!-- Premium Fonts CDN -->
-  <link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            headingNew: ['Outfit', 'sans-serif'],
-            bodyNew: ['Plus Jakarta Sans', 'sans-serif'],
-          },
-          screens: {
-            'xs': '360px',
-          }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ARTIC Market | Enter Details</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2B9348',
+                        primaryDark: '#1E6F34',
+                        accent: '#F9A826',
+                        dark: '#222222'
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        heading: ['Outfit', 'sans-serif'],
+                        headingNew: ['Outfit', 'sans-serif'],
+                        bodyNew: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
         }
-      }
-    }
-  </script>
+    </script>
 
-  <!-- GSAP for Smooth Animations -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-  <!-- Canvas Confetti for Success Page -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- GSAP for Smooth Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
-  <!-- =====================================================================
-       CORE FIX: Execute immediately BEFORE browser paints to eliminate FOUC
-       ===================================================================== -->
-  <script>
-    const isAlreadyRegistered = localStorage.getItem('artic_registered') === 'true';
-    
-    if (isAlreadyRegistered) {
-        // Inject CSS synchronously to swap visibility before the DOM is even painted
-        document.write(`
-          <style>
-            #page-form { opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; z-index: 0 !important; }
-            #page-already-registered { opacity: 1 !important; visibility: visible !important; transform: translateY(0) scale(1) !important; pointer-events: auto !important; z-index: 10 !important; }
-            #bg-image { opacity: 1 !important; transform: scale(1) !important; }
-          </style>
-        `);
-    }
-  </script>
+    <style>
+        html {
+            font-size-adjust: 0.52;
+        }
 
-  <style>
-    /* =========================================
-       1. Custom Properties & Reset
-       ========================================= */
-    :root {
-      --color-primary-green: #6DBE45;
-      --color-primary-yellow: #F4C542;
-      --color-charcoal-black: #0C0C0C;
-      --color-text-white: #FFFFFF;
-      --color-text-muted: rgba(255, 255, 255, 0.6);
-      --font-display: 'Clash Display', -apple-system, sans-serif;
-      --font-body: 'Plus Jakarta Sans', -apple-system, sans-serif;
-      --accent-green: #22c55e;
-      
-      /* Form specific variables */
-      --green: #16a34a;
-      --green-light: #22c55e;
-      --yellow: #facc15;
-      --white: #ffffff;
-      --ink: #0f1a0d;
-    }
+        :root {
+            --green: #16a34a; 
+            --green-light: #22c55e;
+            --ink: #0f1a0d;
+        }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+        body, html {
+            margin: 0;
+            padding: 0;
+            background-color: #FFFFFF;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-    html, body {
-      width: 100%;
-      min-height: 100dvh;
-      background-color: #0a1009;
-      color: var(--color-text-white);
-      font-family: var(--font-body);
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      -webkit-tap-highlight-color: transparent;
-    }
+        /* Mobile specific full-screen adjustments */
+        @media (max-width: 1023px) {
+            .mobile-full-screen {
+                min-height: 100dvh;
+                min-height: -webkit-fill-available;
+            }
+        }
 
-    /* =========================================
-       2. General Utilities & Typography
-       ========================================= */
-    .texture {
-      background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
-      opacity: 0.15;
-      mix-blend-mode: overlay;
-    }
-    .font-heading-new { font-family: 'Outfit', sans-serif; }
-    .font-display { font-family: var(--font-display); }
-    .font-body-new { font-family: 'Plus Jakarta Sans', sans-serif; } 
+        /* Desktop Box Shadow */
+        @media (min-width: 1024px) {
+            .desktop-box-shadow {
+                box-shadow: 0 18px 40px rgba(0,0,0,.18);
+            }
+        }
 
-    /* Page Transition Setup */
-    .page-transition {
-      transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.6s;
-    }
-    .hidden-page {
-      opacity: 0;
-      transform: translateY(20px) scale(0.98);
-      pointer-events: none;
-      visibility: hidden;
-      z-index: 0;
-    }
-    .visible-page {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-      pointer-events: auto;
-      visibility: visible;
-      z-index: 10;
-    }
+        /* =========================================
+           GPU Promotion & Initial States
+           ========================================= */
+        section {
+            will-change: transform, opacity;
+            transform: translateZ(0);
+        }
 
-    /* =========================================
-       3. Form Field UI Styles
-       ========================================= */
-    input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, input:-webkit-autofill:active {
-      -webkit-box-shadow: 0 0 0 50px #fff inset !important;
-      -webkit-text-fill-color: var(--ink) !important;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-    }
+        .form-stagger { 
+            opacity: 0; 
+            will-change: transform, opacity;
+        }
 
-    .field { position: relative; width: 100%; opacity: 0; }
-    .field-inner {
-      position: relative; height: 60px; background: #f8faf8; border-radius: 14px; border: 1.5px solid #e5e9e5;
-      display: flex; align-items: center; overflow: hidden; transition: border-color 0.2s, background 0.2s, box-shadow 0.2s; cursor: text;
-    }
-    @media(min-width: 640px) { .field-inner { height: 68px; border-radius: 16px; } }
-    .field-inner:focus-within { border-color: var(--green-light); background: #fff; box-shadow: 0 0 0 4px rgba(34,197,94,0.1); }
+        /* =========================================
+           New Custom Input & Glow Styles
+           ========================================= */
+        .field-inner {
+            transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+            background: #f8faf8;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem; 
+        }
 
-    .field-icon { width: 48px; height: 100%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    @media(min-width: 640px) { .field-icon { width: 52px; } }
-    .field-icon svg { color: #9ca3af; transition: color 0.2s; }
-    .field-inner:focus-within .field-icon svg { color: var(--green); }
+        .field-inner:focus-within { 
+            border-color: var(--green-light); 
+            background: #fff; 
+            box-shadow: 0 0 0 4px rgba(34,197,94,0.1); 
+        }
 
-    .field-phone-prefix {
-      display: flex; align-items: center; gap: 6px; padding: 0 12px 0 16px; height: 100%;
-      border-right: 1.5px solid #e5e9e5; flex-shrink: 0; transition: border-color 0.2s;
-    }
-    @media(min-width: 640px) { .field-phone-prefix { padding: 0 14px 0 20px; } }
-    .field-inner:focus-within .field-phone-prefix { border-color: #c8e6c9; }
-    
-    .field-phone-prefix img { width: 18px; height: auto; border-radius: 2px; }
-    @media(min-width: 640px) { .field-phone-prefix img { width: 20px; } }
-    
-    .field-phone-prefix span { font-size: 16px; font-weight: 600; color: var(--ink); letter-spacing: 0.02em; font-family: 'Plus Jakarta Sans', sans-serif;}
-    @media(min-width: 640px) { .field-phone-prefix span { font-size: 17px; } }
+        .field-icon {
+            color: #9ca3af; 
+            transition: color 0.2s;
+        }
 
-    .field-content { flex: 1; position: relative; height: 100%; display: flex; align-items: flex-end; overflow: hidden; }
+        .field-inner:focus-within .field-icon,
+        .field-inner:has(.custom-input:not(:placeholder-shown)) .field-icon {
+            color: var(--green);
+        }
 
-    label.float-label {
-      position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 13px; font-weight: 500;
-      color: #9ca3af; pointer-events: none; transition: top 0.2s, font-size 0.2s, color 0.2s, transform 0.2s;
-      transform-origin: left center; z-index: 2; letter-spacing: 0.01em; font-family: 'Plus Jakarta Sans', sans-serif;
-    }
-    @media(min-width: 640px) { label.float-label { left: 16px; font-size: 14px; } }
-    
-    .field-content.filled label.float-label,
-    .field-inner:focus-within .field-content label.float-label {
-      top: 8px; font-size: 10px; color: var(--green); transform: translateY(0); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
-    }
-    @media(min-width: 640px) {
-      .field-content.filled label.float-label,
-      .field-inner:focus-within .field-content label.float-label { top: 10px; font-size: 10.5px; }
-    }
-    .field-content label.float-label.phone { left: 12px; }
-    @media(min-width: 640px) { .field-content label.float-label.phone { left: 14px; } }
+        .custom-input {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--ink);
+            letter-spacing: 0.01em;
+            background: transparent;
+            border: none;
+            outline: none;
+            width: 100%;
+        }
 
-    input.field-input {
-      position: absolute; bottom: 0; left: 0; right: 0; height: 38px; background: transparent; border: none; outline: none;
-      padding: 0 14px 4px 14px; font-size: 16px; font-weight: 600; color: var(--ink); font-family: 'Plus Jakarta Sans', sans-serif;
-      letter-spacing: 0.01em; z-index: 1; width: 100%;
-    }
-    @media(min-width: 640px) { input.field-input { height: 42px; padding: 0 16px 8px 16px; font-size: 17.5px; } }
-    
-    input.field-input.phone { padding: 0 12px 4px 12px; }
-    @media(min-width: 640px) { input.field-input.phone { padding: 0 14px 8px 14px; } }
+        @media (min-width: 640px) {
+            .custom-input {
+                font-size: 17.5px;
+            }
+        }
 
-    .field-check {
-      position: absolute; right: 16px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px;
-      border-radius: 50%; background: var(--green-light); display: flex; align-items: center; justify-content: center;
-      opacity: 0; transition: opacity 0.2s; flex-shrink: 0;
-    }
-    @media(min-width: 640px) { .field-check { right: 20px; width: 20px; height: 20px; } }
-    
-    .field-check.visible { opacity: 1; }
-    .field-check svg { color: white; width: 10px; height: 10px; }
-    @media(min-width: 640px) { .field-check svg { width: 11px; height: 11px; } }
+        .custom-input::placeholder {
+            color: #9ca3af;
+            font-weight: 400;
+        }
 
-    .submit-btn {
-      width: 100%; height: 60px; background: var(--ink); color: var(--white); border: none; border-radius: 99px;
-      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-weight: 700; letter-spacing: 0.03em; cursor: pointer;
-      display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.25s ease; opacity: 0;
-    }
-    @media(min-width: 640px) { .submit-btn { height: 64px; border-radius: 99px; gap: 10px; font-size: 17px; } }
-    @media(min-width: 768px) { .submit-btn { height: 68px; font-size: 18px; } }
-    
-    .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(15,26,13,0.4); }
-    .submit-btn:active { transform: scale(0.98); }
-    
-    .submit-btn .btn-badge {
-      width: 22px; height: 22px; border-radius: 50%; background: var(--yellow);
-      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-    }
-    @media(min-width: 640px) { .submit-btn .btn-badge { width: 24px; height: 24px; border-radius: 50%; } }
-    
-    .submit-btn .btn-badge svg { color: var(--ink); width: 12px; height: 12px; }
-    @media(min-width: 640px) { .submit-btn .btn-badge svg { width: 13px; height: 13px; } }
+        /* =========================================
+           Tick Animation Styles
+           ========================================= */
+        .field-check {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--green-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0; 
+            transition: opacity 0.2s ease-in-out; 
+            flex-shrink: 0;
+        }
 
-    .trust-row { display: flex; align-items: center; justify-content: center; opacity: 0; }
-    .trust-item { display: flex; align-items: center; gap: 5px; font-size: 12px; color: #9ca3af; font-weight: 600; font-family: 'Plus Jakarta Sans', sans-serif; }
-    .trust-item svg { color: var(--green-light); flex-shrink: 0; }
+        .field-check.visible {
+            opacity: 1;
+        }
 
-    /* =========================================
-       4. Success Page & Registered Pages Styles
-       ========================================= */
-    @keyframes pulseGlow {
-      0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
-      70% { box-shadow: 0 0 0 15px rgba(34, 197, 94, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
-    }
-    .pulse-ring-form { animation: pulseGlow 2s infinite; }
-    .pulse-ring-yellow { animation: pulseGlowYellow 2s infinite; }
-    @keyframes pulseGlowYellow {
-      0% { box-shadow: 0 0 0 0 rgba(244, 197, 66, 0.4); }
-      70% { box-shadow: 0 0 0 15px rgba(244, 197, 66, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(244, 197, 66, 0); }
-    }
+        .field-check svg {
+            color: white;
+            width: 10px;
+            height: 10px;
+        }
 
-    .location-badge {
-      display: inline-flex; align-items: center; gap: 8px; background: #f8faf8; border: 1px solid #e2e8f0;
-      border-radius: 40px; padding: 8px 16px; margin: 0 auto; font-size: 12.5px; font-weight: 600; color: #334155;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03); font-family: 'Plus Jakarta Sans', sans-serif;
-    }
-    @media(min-width: 640px) { .location-badge { gap: 10px; padding: 10px 22px; font-size: 13.5px; } }
+        /* =========================================
+           CTA Button Styling
+           ========================================= */
+        .cta-btn {
+            position: relative; overflow: hidden; display: inline-flex; align-items: center; justify-content: space-between;
+            background-color: #0c0c0c; color: #ffffff;
+            padding: 0.5rem 0.5rem 0.5rem 2rem; border-radius: 9999px;
+            font-size: 0.95rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+            border: none; cursor: pointer; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            width: 100%;
+        }
+        .cta-btn:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25), 0 0 0 6px rgba(0, 0, 0, 0.05) !important; 
+        }
+        .cta-btn:active { transform: translateY(1px); }
+        .cta-btn::before {
+            content: ''; position: absolute; top: 0; left: -150%; width: 150%; height: 100%;
+            background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.15) 50%, transparent 100%);
+            transform: skewX(-20deg); transition: left 0.7s cubic-bezier(0.16, 1, 0.3, 1); z-index: 0;
+        }
+        .cta-btn:hover::before { left: 150%; }
+        .btn-text { position: relative; z-index: 1; text-align: center; width: 100%; padding-right: 1rem; }
 
-    .referral-card {
-      background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 20px; 
-      padding: 24px 14px 24px; margin-top: 18px; 
-      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.04); text-align: center; width: 100%;
-    }
-    @media(min-width: 640px) { .referral-card { border-radius: 24px; padding: 22px 20px 22px; margin-top: 10px; } }
+        .arrow-wrapper {
+            position: relative; z-index: 1; display: flex; align-items: center; justify-content: center;
+            width: 42px; height: 42px; border-radius: 50%; background-color: #ffffff; color: #0c0c0c; 
+            overflow: hidden; flex-shrink: 0;
+        }
+        .arrow-1 { display: flex; align-items: center; justify-content: center; transition: transform 0.3s ease; }
+        .cta-btn:hover .arrow-1 { transform: translateX(3px); }
 
-    .marker-stroke { stroke-dasharray: 115; stroke-dashoffset: 115; transition: stroke-dashoffset 1.8s cubic-bezier(0.25, 1, 0.5, 1); }
-    .active .marker-stroke { stroke-dashoffset: 0; }
-
-    @keyframes floatGift {
-      0%, 100% { transform: translateY(0) rotate(-3deg); }
-      50% { transform: translateY(-10px) rotate(3deg); }
-    }
-    .floating-gift { display: flex; justify-content: center; align-items: center; margin: 0 auto 10px auto; animation: floatGift 3s ease-in-out infinite; filter: drop-shadow(0 8px 12px rgba(250, 204, 21, 0.35)); }
-
-    .whatsapp-btn {
-      display: flex; align-items: center; justify-content: center; gap: 8px; padding: 0 16px; height: 54px; border: none;
-      border-radius: 40px; cursor: pointer; position: relative; overflow: hidden; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      background-color: #00d757; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0 auto; z-index: 1; box-shadow: 0 8px 22px rgba(0, 215, 87, 0.4);
-      animation: wpPulse 2.4s ease-in-out infinite; font-weight: 700; letter-spacing: 0.02em; color: white; font-size: 14px; width: 100%;
-    }
-    @media(min-width: 640px) { .whatsapp-btn { gap: 10px; padding: 0 24px; height: 57px; font-size: 15px; } }
-
-    @keyframes wpPulse {
-      0%, 100% { box-shadow: 0 8px 22px rgba(0, 215, 87, 0.4), 0 0 0 0 rgba(0, 215, 87, 0.55); }
-      60% { box-shadow: 0 8px 22px rgba(0, 215, 87, 0.4), 0 0 0 16px rgba(0, 215, 87, 0); }
-    }
-    .whatsapp-btn::after {
-      content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-      background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.3), transparent); transform: skewX(-25deg); transition: all 0.6s ease; z-index: -1;
-    }
-    .whatsapp-btn:hover { transform: translateY(-3px); background-color: #00e65c; animation-play-state: paused; box-shadow: 0 14px 32px rgba(0, 215, 87, 0.55), 0 0 0 8px rgba(0, 215, 87, 0.08) !important; }
-    .whatsapp-btn:hover::after { left: 120%; }
-    .whatsapp-btn:active { transform: translateY(2px); box-shadow: 0 4px 10px rgba(0, 215, 87, 0.4) !important; }
-    .whatsapp-icon { width: 18px; height: 18px; fill: white; transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); flex-shrink: 0; }
-    @media(min-width: 640px) { .whatsapp-icon { width: 22px; height: 22px; } }
-
-    /* Already Registered Specific Utilities */
-    .stagger-el { opacity: 0; transform: translateY(15px); }
-
-    /* =========================================
-       5. Days Left Countdown Popup
-       ========================================= */
-    .countdown-popup {
-      position: fixed;
-      top: 16px;
-      left: 16px;
-      z-index: 50;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: #facc15;
-      padding: 6px 14px;
-      border-radius: 99px;
-      box-shadow: 0 4px 14px rgba(250, 204, 21, 0.4);
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-weight: 800;
-      font-size: 12px;
-      color: #0f1a0d;
-      opacity: 0;
-      transform: scale(0.8) translateY(-10px);
-    }
-    @media(min-width: 640px) {
-      .countdown-popup {
-        position: absolute;
-        top: 24px;
-        left: 24px;
-        padding: 8px 18px;
-        font-size: 13.5px;
-      }
-    }
-    .clock-anim svg { color: #0f1a0d; }
-    .clock-hand {
-      transform-origin: 12px 12px;
-      animation: clockSpin 3s linear infinite;
-    }
-    @keyframes clockSpin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    
-    @media (max-height: 650px) {
-      .responsive-padding { padding-top: 2rem !important; padding-bottom: 2rem !important; }
-    }
-
-    /* Short Mobile Screens (<720px height) FIX */
-    @media (max-height: 720px) and (max-width: 639px) {
-      #page-form { padding-top: 0 !important; padding-bottom: 0 !important; }
-      #page-form .gsap-card { padding-top: 24px !important; padding-bottom: 32px !important; min-height: 100dvh !important; }
-      #page-form .mb-8 { margin-bottom: 24px !important; }
-      .field-inner { height: 56px !important; }
-      .submit-btn { height: 56px !important; }
-      .pt-\[26px\] { padding-top: 20px !important; }
-
-      #page-ending { padding-top: 16px !important; padding-bottom: 16px !important; }
-      #success-inner { padding-top: 24px !important; padding-bottom: 8px !important; }
-      #success-inner .mb-6 { margin-bottom: 16px !important; }
-      #checkmark-circle { width: 56px !important; height: 56px !important; }
-      #checkmark-circle svg { width: 28px !important; height: 28px !important; }
-      #success-inner h2 { font-size: 24px !important; margin-bottom: 4px !important; }
-      #success-inner p { margin-bottom: 12px !important; font-size: 13px !important; }
-      #reward-inner { padding-bottom: 24px !important; }
-      .referral-card { padding: 16px 14px !important; margin-top: 12px !important; }
-      .floating-gift { margin-bottom: 8px !important; }
-      .floating-gift svg { width: 40px !important; height: 40px !important; }
-      .referral-card h3 { font-size: 18px !important; margin-bottom: 4px !important; }
-      .referral-card p { font-size: 12px !important; margin-bottom: 12px !important; }
-      .whatsapp-btn { height: 54px !important; font-size: 13px !important; }
-      #reward-inner a { margin-top: 16px !important; }
-    }
-  </style>
+        /* =========================================
+           Back Button Styles
+           ========================================= */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.625rem;
+            color: #6b7280;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            width: max-content;
+            transition: all 0.3s ease;
+        }
+        .back-btn:hover {
+            color: #111827;
+        }
+        .icon-circle {
+            width: 2.25rem;
+            height: 2.25rem;
+            border-radius: 50%;
+            background-color: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease;
+        }
+        .back-btn:hover .icon-circle {
+            background-color: #e5e7eb;
+        }
+        .back-btn .btn-text {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 0.025em;
+            width: auto;
+            padding-right: 0;
+        }
+    </style>
 </head>
-<body class="antialiased">
+<body class="text-dark bg-white lg:bg-gray-900 overflow-x-hidden">
 
-  <!-- Deep Ambient Background Core -->
-  <div class="fixed inset-0 z-0 pointer-events-none bg-[#0a1009] overflow-hidden">
-    <!-- Initial background opacity set to 0 for a soft GSAP fade-in effect -->
-    <div id="bg-image" class="absolute inset-0 bg-cover bg-center opacity-0" style="background-image: url('https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=1920&h=1080');"></div>
-    <div class="absolute inset-0 bg-gradient-to-b from-[#0a1009]/85 via-[#0a1009]/65 to-[#0a1009]/95"></div>
-    <div class="absolute inset-0 texture pointer-events-none"></div>
-  </div>
-
-  <!-- Main Dynamic Layout Grid -->
-  <div class="relative z-10 grid w-full place-items-center min-h-[100dvh]">
-
-    <!-- ================= PAGE 1: REGISTRATION FORM ================= -->
-    <div id="page-form" class="font-body-new page-transition visible-page w-full h-full min-h-[100dvh] flex flex-col justify-center items-center p-0 sm:py-10 sm:px-5 relative" style="grid-area: 1/1;">
+    <main class="flex flex-col min-h-[100dvh] w-full relative lg:items-center lg:justify-center">
         
-        <!-- Desktop Back Button (Hidden on Mobile) -->
-        <div class="hidden sm:block fixed top-8 left-8 z-[100] gsap-back-btn">
-            <!-- Non-functional Back Button (No UX logic attached except preventing default actions) -->
-            <button class="trigger-back-btn group flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-white rounded-full shadow-[0_12px_24px_rgba(0,0,0,0.2)] transition-all hover:bg-gray-100 active:scale-90 outline-none">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-gray-800 transition-transform duration-300 group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
-                </svg>
-            </button>
+        <!-- ================= BACKGROUND IMAGE (DESKTOP ONLY) ================= -->
+        <div class="hidden lg:block absolute inset-0 w-full h-full z-0 overflow-hidden">
+            <div class="w-full h-full bg-[url('https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center"></div>
+            <div class="absolute inset-0 bg-black/60 z-10"></div>
+            
+            <div class="absolute top-10 left-10 z-20 flex items-center gap-2.5">
+                <div class="w-10 h-10 bg-primary/90 backdrop-blur-md rounded-xl flex items-center justify-center shadow-lg border border-white/10">
+                    <span class="text-white font-heading font-bold text-2xl leading-none">A</span>
+                </div>
+                <span class="text-white font-heading font-bold text-xl tracking-tight drop-shadow-md">ARTIC Market.</span>
+            </div>
         </div>
 
-        <div class="w-full flex-1 sm:flex-none h-auto min-h-[100dvh] sm:min-h-0 max-w-[520px] max-h-full bg-white rounded-none sm:rounded-[32px] md:rounded-[40px] px-6 py-7 sm:px-7 sm:pt-14 sm:pb-[48px] md:px-12 md:pt-[75px] md:pb-[53px] shadow-none sm:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.7)] flex flex-col justify-center relative mt-0 sm:mt-0 gsap-card mx-auto">
+        <!-- ================= CENTERED FORM BOX ================= -->
+        <section class="relative w-full bg-white z-10 
+                        mobile-full-screen flex flex-col justify-start p-6 sm:p-10 
+                        lg:w-[540px] lg:min-h-[720px] lg:justify-center lg:rounded-[40px] lg:p-[1.7rem] desktop-box-shadow">
             
-            <!-- Mobile Back Button (Inside Card, Hidden on Desktop) -->
-            <div class="block sm:hidden absolute top-5 left-5 z-[100] gsap-back-btn">
-                <button class="trigger-back-btn group flex items-center justify-center w-10 h-10 bg-transparent rounded-full transition-all active:scale-90 outline-none">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#9ca3af] transition-transform duration-300 group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
-                    </svg>
-                </button>
-            </div>
-
-            <div class="mb-8 sm:mb-[36px] w-full text-center mt-3 sm:mt-0">
-                <h2 class="font-headingNew text-[36px] sm:text-[44px] md:text-[44px] font-black text-gray-900 tracking-tight leading-none">
-                    Secure Your <span class="text-[#22c55e]">Spot.</span>
-                </h2>
-                <p class="font-bodyNew text-gray-500 text-[15px] sm:text-[16px] md:text-[17px] font-normal mt-3 sm:mt-4 max-w-[420px] md:max-w-[576px] mx-auto leading-relaxed px-2 sm:px-0">
-                    Enter your details below to claim your lifetime wholesale access
-                </p>
-            </div>
-            
-            <form id="regForm" class="w-full space-y-[26px] sm:space-y-[18px] max-sm:pb-[160px]">
+            <div class="w-full max-w-[480px] mx-auto flex flex-col relative pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] lg:pt-0 lg:pb-0">
                 
-                <div class="field">
-                    <div class="field-inner">
-                        <div class="field-icon">
-                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <!-- Back Button -->
+                <div class="form-stagger mb-8 mt-2 lg:mt-0">
+                    <button type="button" class="back-btn" onclick="window.location.href='index.html'">
+                        <div class="icon-circle">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M19 12H5"></path>
+                                <path d="M12 19l-7-7 7-7"></path>
+                            </svg>
                         </div>
-                        <div class="field-content" id="fc-name">
-                            <label class="float-label" for="fname">FULL NAME</label>
-                            <input class="field-input capitalize" type="text" id="fname" required autocomplete="name" oninput="handleInput(this,'fc-name')">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="field">
-                    <div class="field-inner">
-                        <div class="field-phone-prefix">
-                            <img src="https://flagcdn.com/in.svg" alt="India" loading="lazy">
-                            <span>+91</span>
-                        </div>
-                        <div class="field-content" id="fc-phone">
-                            <label class="float-label phone" for="fphone">MOBILE NUMBER</label>
-                            <input class="field-input phone" type="tel" id="fphone" required pattern="[0-9]{10}" maxlength="10" inputmode="numeric" oninput="handleInput(this,'fc-phone','chk-phone');this.value=this.value.replace(/\D/g,'')">
-                        </div>
-                        <div class="field-check" id="chk-phone">
-                            <svg fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="field">
-                    <div class="field-inner">
-                        <div class="field-icon">
-                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                        </div>
-                        <div class="field-content" id="fc-place">
-                            <label class="float-label" for="fplace">CITY / TOWN</label>
-                            <input class="field-input capitalize" type="text" id="fplace" required autocomplete="address-level2" oninput="handleInput(this,'fc-place')">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pt-[26px] sm:pt-8 w-full max-sm:absolute max-sm:bottom-7 max-sm:left-0 max-sm:w-full max-sm:px-6 max-sm:pt-0 max-sm:!mt-0">
-                    <button type="submit" class="submit-btn" id="submitBtn">
-                        <span id="btnText">Submit Form</span>
-                        <div id="btnBadge" class="btn-badge">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
-                        </div>
-                        <svg id="btnSpinner" class="hidden animate-spin h-5 w-5 text-[#facc15]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
+                        <span class="btn-text">Back</span>
                     </button>
-                    
-                    <div class="trust-row mt-[28px] sm:mt-[20px]">
-                        <div class="trust-item">
-                            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-                            Your data is secure and will never be shared
-                        </div>
-                    </div>
                 </div>
 
-            </form>
-        </div>
-    </div>
-
-    <!-- ================= PAGE 2: SUCCESS / END PAGE ================= -->
-    <div id="page-ending" class="font-body-new page-transition hidden-page w-full h-full min-h-[100dvh] flex flex-col justify-center items-center py-6 sm:py-8 px-3.5 sm:px-5 relative" style="grid-area: 1/1;">
-        
-        <div id="page-ending-card" class="w-full max-w-[520px] bg-white rounded-[32px] md:rounded-[40px] px-5 sm:px-6 md:px-10 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8)] flex flex-col items-center relative mx-auto text-center overflow-hidden">
-            
-            <!-- Days Left Countdown Popup -->
-            <div class="countdown-popup">
-                <div class="clock-anim">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <path class="clock-hand" d="M12 6v6l3 3"></path>
-                    </svg>
-                </div>
-                <span><span class="days-count-val">0</span> Days Left</span>
-            </div>
-
-            <div id="success-wrapper" class="w-full overflow-hidden" style="height: 0; opacity: 0;">
-                <div id="success-inner" class="flex flex-col items-center w-full relative z-10 bg-white pt-12 sm:pt-10 pb-4 sm:pb-2 md:pb-3">
-                    
-                    <div class="relative mb-6 sm:mb-5">
-                        <div class="absolute inset-0 rounded-full border-[2.5px] border-[#22c55e] pulse-ring-form"></div>
-                        <div id="checkmark-circle" class="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-[#22c55e] to-[#16a34a] rounded-full flex items-center justify-center shadow-[0_10px_25px_rgba(34,197,94,0.35)] relative z-10">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 sm:h-10 sm:w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path id="checkmark-tick" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-                            </svg>
-                        </div>
-                    </div>
-
-                    <h2 class="success-stagger font-heading-new text-[28px] sm:text-[32px] md:text-[36px] font-black text-[#0f1a0d] mb-2 sm:mb-1.5 tracking-tight">
-                        Thank <span class="text-[#22c55e]">You!</span>
+                <!-- Form Heading -->
+                <div class="form-stagger mb-10 flex flex-col items-center text-center">
+                    <h2 class="font-headingNew text-[36px] sm:text-[40px] md:text-[40px] font-black leading-tight tracking-tight mb-2">
+                        <span class="text-[#22c55e]">Secure</span> <span class="text-gray-900">Your Spot.</span>
                     </h2>
-                    
-                    <p class="success-stagger text-slate-700 text-[13.5px] sm:text-[15px] font-semibold mb-6 sm:mb-5">Your wholesale access is fully secured.</p>
+                    <p class="font-bodyNew text-[15px] sm:text-[16px] md:text-[17px] text-gray-500 leading-relaxed max-w-[420px] md:max-w-[36rem] mx-auto">
+                        Enter your details below to claim your lifetime wholesale access
+                    </p>
+                </div>
 
-                    <div class="success-stagger location-badge mb-2">
-                        📍 Rajapalayam — Location Soon
+                <!-- Registration Form -->
+                <form action="#" method="POST" class="space-y-6">
+                    
+                    <!-- Name Input -->
+                    <div class="form-stagger space-y-2">
+                        <label for="name" class="block font-bodyNew font-bold text-gray-700 uppercase text-[12px] lg:text-[13px]">Full Name</label>
+                        <div class="field-inner relative flex items-center px-4 py-3.5">
+                            <span class="field-icon mr-3 pr-3 border-r border-gray-300 flex-shrink-0">
+                                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                            </span>
+                            <input type="text" id="name" name="name" required placeholder="Your Name" class="custom-input">
+                        </div>
                     </div>
 
-                </div>
-            </div>
-
-            <div id="reward-wrapper" class="w-full overflow-hidden" style="height: 0; opacity: 0;">
-                <div id="reward-inner" class="w-full pt-[0.2rem] pb-12 sm:pb-10 flex flex-col items-center">
-                    
-                    <div class="referral-card">
-                        <div class="floating-gift">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="48" height="48" class="sm:w-[56px] sm:h-[56px]">
-                                <rect x="12" y="28" width="40" height="30" rx="3" fill="#22c55e" />
-                                <rect x="28" y="28" width="8" height="30" fill="#facc15" />
-                                <rect x="8" y="20" width="48" height="12" rx="2" fill="#16a34a" />
-                                <rect x="28" y="20" width="8" height="12" fill="#eab308" />
-                                <path d="M32 20C32 20 26 6 16 12C10 16 16 20 16 20H32Z" fill="#facc15" />
-                                <path d="M32 20C32 20 38 6 48 12C54 16 48 20 48 20H32Z" fill="#facc15" />
-                                <circle cx="32" cy="20" r="4" fill="#ca8a04" />
-                            </svg>
-                        </div>
-
-                        <h3 class="text-[22px] sm:text-[1.55rem] font-black text-[#0f1a0d] mb-2 sm:mb-2.5 font-heading-new inline-block relative">
-                            <span id="highlight-trigger" class="relative inline-block px-2">
-                                <span class="relative z-10">Unlock Extra <span class="text-[#22c55e]">10% OFF</span></span>
-                                <svg class="absolute inset-x-0 bottom-[2px] h-[65%] w-[104%] -left-[2%] z-0 pointer-events-none" viewBox="0 0 100 10" preserveAspectRatio="none">
-                                    <path d="M 2,5 Q 50,7 98,4" fill="none" stroke="rgba(253, 224, 71, 0.9)" stroke-width="8" stroke-linecap="round" class="marker-stroke" />
-                                </svg>
+                    <!-- Phone Number Input -->
+                    <div class="form-stagger space-y-2">
+                        <label for="phone" class="block font-bodyNew font-bold text-gray-700 uppercase text-[12px] lg:text-[13px]">Phone Number</label>
+                        <div class="field-inner relative flex items-center">
+                            <span class="absolute left-4 text-gray-500 font-bodyNew font-semibold flex items-center gap-1.5 border-r border-gray-300 pr-3 pointer-events-none">
+                                🇮🇳 +91
                             </span>
-                        </h3>
-                        
-                        <p class="text-gray-600 text-[13px] sm:text-[14px] leading-relaxed mb-4 sm:mb-5 font-medium">
-                            Share with <span class="text-[#22c55e] font-bold">10 friends & family</span> in Rajapalayam to unlock an exclusive discount.
-                        </p>
+                            <input type="tel" id="phone" name="phone" required placeholder="Your number" 
+                                pattern="[0-9]{10}" maxlength="10"
+                                oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10); document.getElementById('phone-check').classList.toggle('visible', this.value.length === 10);"
+                                class="custom-input pl-[85px] pr-10 py-3.5">
+                            
+                            <!-- Tick Animation Container -->
+                            <div id="phone-check" class="field-check">
+                                <svg fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                                    <path d="M20 6L9 17l-5-5"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
 
-                        <button onclick="share()" class="whatsapp-btn">
-                            <svg class="whatsapp-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-                                <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
-                            </svg>
-                            <span>Share on WhatsApp</span>
+                    <!-- Location Input -->
+                    <div class="form-stagger space-y-2">
+                        <label for="location" class="block font-bodyNew font-bold text-gray-700 uppercase text-[12px] lg:text-[13px]">City</label>
+                        <div class="field-inner relative flex items-center px-4 py-3.5">
+                            <span class="field-icon mr-3 pr-3 border-r border-gray-300 flex-shrink-0">
+                                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                            </span>
+                            <input type="text" id="location" name="location" required placeholder="e.g. Rajapalayam" class="custom-input">
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="form-stagger pt-4">
+                        <button type="submit" class="cta-btn">
+                            <span class="btn-text">Confirm Registration</span>
+                            <span class="arrow-wrapper">
+                                <span class="arrow-1">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                                </span>
+                            </span>
                         </button>
                     </div>
 
-                    <a href="https://articmarket.com" class="text-slate-600 hover:text-slate-800 hover:underline text-[12px] font-bold transition-all uppercase tracking-[0.06em] flex items-center justify-center gap-1.5 mt-8 sm:mt-5">
-                        Skip to website
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
-                        </svg>
-                    </a>
-                </div>
+                    <div class="form-stagger text-center pt-2">
+                        <p class="text-[12px] text-gray-400 font-bodyNew font-medium flex items-center justify-center gap-1.5">
+                            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" style="color: var(--green-light); flex-shrink: 0;"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                            Your data is secure and will never be shared.
+                        </p>
+                    </div>
+
+                </form>
             </div>
+        </section>
+    </main>
 
-        </div>
-    </div>
+    <!-- GSAP Animations Logic -->
+    <script>
+        window.addEventListener('load', () => {
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    <!-- ================= PAGE 3: ALREADY REGISTERED PAGE ================= -->
-    <div id="page-already-registered" class="page-transition hidden-page w-full h-full min-h-[100dvh] grid place-items-center py-10 px-4 sm:px-6 md:px-8 overflow-y-auto responsive-padding relative" style="grid-area: 1/1;">
-      
-        <!-- Already Registered UI Card -->
-        <div id="already-registered-card" class="w-full max-w-[500px] bg-white rounded-[28px] sm:rounded-[32px] md:rounded-[40px] p-6 xs:p-7 sm:p-8 md:p-10 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8)] flex flex-col items-center text-center my-auto relative overflow-hidden" style="opacity: 0; transform: translateY(40px) scale(0.96);">
-            
-            <!-- Days Left Countdown Popup -->
-            <div class="countdown-popup">
-                <div class="clock-anim">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <path class="clock-hand" d="M12 6v6l3 3"></path>
-                    </svg>
-                </div>
-                <span><span class="days-count-val">0</span> Days Left</span>
-            </div>
-
-            <!-- Animated Icon Badge -->
-            <div class="relative mb-5 sm:mb-6">
-                <div class="absolute inset-0 rounded-full border-[2.5px] border-[#facc15] pulse-ring-yellow"></div>
-                <div class="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-[#facc15] to-[#eab308] rounded-full flex items-center justify-center shadow-[0_10px_25px_rgba(250,204,21,0.35)] relative z-10">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 sm:h-10 sm:w-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <polyline points="16 11 18 13 22 9"></polyline>
-                    </svg>
-                </div>
-            </div>
-
-            <!-- Headings -->
-            <h2 class="stagger-el font-headingNew text-[26px] xs:text-[28px] sm:text-[32px] md:text-[36px] font-black text-[#0f1a0d] mb-5 sm:mb-6 leading-tight tracking-tight">
-                You've already <br/><span class="text-[#eab308]">Registered!</span>
-            </h2>
-
-            <!-- Location Badge -->
-            <div class="stagger-el location-badge mb-7 sm:mb-8">
-                📍 Rajapalayam — Location Soon
-            </div>
-
-            <!-- Referral Section -->
-            <div class="stagger-el w-full pt-6 border-t border-gray-100 flex flex-col items-center">
-                
-                <h3 class="text-[22px] sm:text-[24px] font-black text-[#0f1a0d] mb-2 sm:mb-3 font-headingNew">
-                    Share with Friends
-                </h3>
-                
-                <p class="text-gray-500 text-[13.5px] sm:text-[14.5px] md:text-[15px] leading-relaxed mb-6 font-medium max-w-[360px]">
-                    Invite <span class="text-[#22c55e] font-bold">10 friends & family</span> in Rajapalayam to unlock an exclusive <span class="text-[#22c55e] font-bold">10% discount!</span>
-                </p>
-
-                <!-- WhatsApp Action -->
-                <button onclick="share()" class="whatsapp-btn">
-                    <svg class="whatsapp-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-                        <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
-                    </svg>
-                    <span>Share on WhatsApp</span>
-                </button>
-            </div>
-
-            <!-- Skip to Website Link -->
-            <div class="stagger-el mt-6 sm:mt-7 w-full">
-                <a href="https://articmarket.com" class="text-slate-500 hover:text-slate-800 hover:underline text-[12.5px] sm:text-[13px] font-bold transition-all uppercase tracking-[0.06em] flex items-center justify-center gap-1.5">
-                    Skip to website
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
-                    </svg>
-                </a>
-            </div>
-
-        </div>
-    </div>
-
-  </div>
-
-  <script>
-    // Form Input Interactions
-    function handleInput(input, fcId, chkId) {
-        const fc = document.getElementById(fcId);
-        const chk = chkId ? document.getElementById(chkId) : null;
-        
-        if (input.value.trim().length > 0) {
-            fc.classList.add('filled');
-            if (chk) {
-                const valid = input.type === 'tel' ? /^[0-9]{10}$/.test(input.value) : input.value.trim().length >= 2;
-                chk.classList.toggle('visible', valid);
+            if (prefersReducedMotion) {
+                gsap.set('.form-stagger, section', { opacity: 1, y: 0 });
+                return;
             }
-        } else {
-            fc.classList.remove('filled');
-            if (chk) chk.classList.remove('visible');
-        }
-    }
 
-    // WhatsApp Share Logic
-    function share() {
-        const text = "Hey! 🥦 I just got VIP wholesale access to farm-fresh veggies at ARTIC MARKET in Rajapalayam. \n\nRegister using my link and we BOTH get an extra 10% OFF! 🎉🍅 \n\nGet it here: [Insert Link]";
-        const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
-        window.open(url, '_blank');
-    }
+            gsap.set("section", { opacity: 1 });
+            gsap.set(".form-stagger", { opacity: 0, y: 16 });
 
-    // ==========================================
-    // Days Left Countdown Calculation Logic
-    // ==========================================
-    function initCountdown() {
-        // ENTER TARGET OPENING DATE BELOW (Format: DD.MM.YYYY)
-        const openingDateStr = '02.08.2026';
-        
-        const parts = openingDateStr.split('.');
-        if (parts.length === 3) {
-            const targetDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}T00:00:00`);
-            const now = new Date();
-            const diffTime = targetDate - now;
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            
-            const badges = document.querySelectorAll('.days-count-val');
-            const popupContainers = document.querySelectorAll('.countdown-popup');
-            
-            if (diffDays > 0) {
-                badges.forEach(b => b.innerText = diffDays);
-            } else {
-                popupContainers.forEach(p => p.style.display = 'none');
-            }
-        }
-    }
-
-    // Animations & State Setup
-    window.addEventListener('DOMContentLoaded', () => {
-      
-      initCountdown(); 
-
-      if (isAlreadyRegistered) {
-          
-          gsap.set('#bg-image', { opacity: 1, scale: 1 });
-
-          // Play Entrance Animations for "Already Registered" Card
-          const tl = gsap.timeline({ delay: 0.2 });
-          tl.to("#already-registered-card", { opacity: 1, y: 0, scale: 1, duration: 1.0, ease: "back.out(1.2)" })
-            .to(".stagger-el", { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: "power2.out" }, "-=0.4")
-            .to("#page-already-registered .countdown-popup", { opacity: 1, scale: 1, y: 0, duration: 0.6, ease: "back.out(1.6)" }, "+=0.2");
-          
-      } else {
-
-          /* ==================================================
-             FORM ENTRY ANIMATIONS (Starts Immediately)
-             ================================================== */
-             
-          // Background soft fade in
-          gsap.to('#bg-image', { opacity: 1, scale: 1, duration: 1.5, ease: 'power2.out' });
-
-          // Play Form Entry Animations
-          gsap.fromTo("#page-form .gsap-card", 
-              { opacity: 0, y: 50, scale: 0.98 }, 
-              { opacity: 1, y: 0, scale: 1, duration: 0.85, ease: "power3.out", delay: 0.1 }
-          );
-          gsap.fromTo(".field", 
-              { opacity: 0, x: -16 }, 
-              { opacity: 1, x: 0, duration: 0.55, stagger: 0.09, ease: "power2.out", delay: 0.25, clearProps: "transform" }
-          );
-          gsap.fromTo(".submit-btn", 
-              { opacity: 0, y: 16 }, 
-              { opacity: 1, y: 0, duration: 0.55, ease: "power2.out", delay: 0.55, clearProps: "transform" }
-          );
-          gsap.fromTo(".trust-row", 
-              { opacity: 0, y: 16 }, 
-              { opacity: 1, y: 0, duration: 0.5, ease: "power2.out", delay: 0.65, clearProps: "transform" }
-          );
-          gsap.fromTo(".gsap-back-btn", 
-              { opacity: 0, scale: 0.5, x: -10, rotation: -20 }, 
-              { opacity: 1, scale: 1, x: 0, rotation: 0, duration: 0.8, ease: "back.out(1.5)", delay: 0.35 }
-          );
-      }
-
-      /* ==================================================
-         SUCCESS PAGE PRE-RENDER STATES
-         ================================================== */
-      gsap.set(["#checkmark-circle", ".pulse-ring-form"], { scale: 0 });
-      gsap.set("#page-ending-card", { opacity: 0, y: 30 });
-      gsap.set("#success-wrapper", { height: 0, opacity: 0 });
-      gsap.set("#success-inner", { y: 40 });
-      gsap.set("#checkmark-tick", { strokeDasharray: 24, strokeDashoffset: 24 });
-      gsap.set(".success-stagger", { opacity: 0, y: 15 });
-      gsap.set("#reward-wrapper", { height: 0, opacity: 0 });
-      gsap.set("#reward-inner", { y: -50 });
-      document.getElementById('highlight-trigger').classList.remove('active');
-
-    });
-
-    /* ==================================================
-       BACK BUTTON LOGIC (UI remains, UX removed)
-       ================================================== */
-    document.querySelectorAll('.trigger-back-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            // Button is now decorative. No navigation will trigger.
-            e.preventDefault(); 
+            requestAnimationFrame(() => {
+                gsap.to(".form-stagger", {
+                    opacity: 1,
+                    y: 0,
+                    stagger: 0.08,
+                    duration: 0.55,
+                    ease: "power2.out"
+                });
+            });
         });
-    });
-
-    /* ==================================================
-       TRANSITION LOGIC: FORM -> SUCCESS (SUBMIT)
-       ================================================== */
-    document.getElementById('regForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        // ----------------------------------------------------
-        //  SUBMITTING ANIMATION LOGIC 
-        // ----------------------------------------------------
-        const submitBtn = document.getElementById('submitBtn');
-        const btnText = document.getElementById('btnText');
-        const btnBadge = document.getElementById('btnBadge');
-        const btnSpinner = document.getElementById('btnSpinner');
-
-        // Set button to Submitting state
-        btnText.innerText = 'Submitting...';
-        btnBadge.style.display = 'none';
-        btnSpinner.classList.remove('hidden');
-        submitBtn.style.pointerEvents = 'none';
-        
-        // Add Tailwind pulsing animation
-        submitBtn.classList.add('animate-pulse');
-
-        // Fake network delay (e.g., 1.8 seconds) before triggering the success popup
-        setTimeout(() => {
-            
-            // Register that the user has completed the flow.
-            localStorage.setItem('artic_registered', 'true');
-
-            // Swap visibility
-            document.getElementById('page-form').classList.replace('visible-page', 'hidden-page');
-            document.getElementById('page-ending').classList.replace('hidden-page', 'visible-page');
-
-            // Play Success Page Animations Timeline
-            const tl = gsap.timeline();
-
-            tl.to("#page-ending-card", { opacity: 1, y: 0, duration: 1.5, ease: "power4.out", delay: 0.3 })
-              .to("#success-wrapper", { height: "auto", opacity: 1, duration: 1.0, ease: "power4.inOut" }, "<")
-              .to("#success-inner", { y: 0, duration: 1.0, ease: "power4.out" }, "<0.1") 
-              
-              .to(["#checkmark-circle", ".pulse-ring-form"], { scale: 1, duration: 0.5, ease: "back.out(1.6)" }, "-=0.3")
-              .to("#checkmark-tick", { strokeDashoffset: 0, duration: 0.35, ease: "power2.out" }, "<0.1")
-              .to(".success-stagger", { opacity: 1, y: 0, duration: 0.45, stagger: 0.1, ease: "power2.out" }, "-=0.1")
-              .add(() => {
-                  confetti({ particleCount: 130, spread: 80, origin: { y: 0.62, x: 0.5 }, colors: ['#ef4444', '#3b82f6', '#facc15', '#22c55e', '#a855f7', '#ec4899'] });
-              }, "-=0.2")
-              
-              .to({}, { duration: 1.0 }) 
-              .addLabel("showReward")
-              
-              .to("#reward-wrapper", { height: "auto", duration: 1.4, ease: "power4.inOut" }, "showReward")
-              .to("#reward-inner", { y: 0, duration: 1.4, ease: "power4.inOut" }, "showReward")
-              .to("#reward-wrapper", { opacity: 1, duration: 1.0, ease: "power2.out" }, "showReward+=0.4")
-              
-              .add(() => {
-                  document.getElementById('highlight-trigger').classList.add('active');
-              }, "showReward+=1.2")
-              .to("#page-ending .countdown-popup", { opacity: 1, scale: 1, y: 0, duration: 0.6, ease: "back.out(1.6)" }, "showReward+=1.5");
-
-            // Clean up button state in the background
-            setTimeout(() => {
-                btnText.innerText = 'Complete Registration';
-                btnBadge.style.display = 'flex';
-                btnSpinner.classList.add('hidden');
-                submitBtn.classList.remove('animate-pulse');
-                submitBtn.style.pointerEvents = 'auto';
-            }, 1000);
-
-        }, 1800);
-    });
-  </script>
+    </script>
 </body>
 </html>
