@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ARTIC Market | Enter Details</title>
+    <title>ARTIC Market | Wholesale Registration</title>
     
-    <!-- Fonts -->
+    <!-- Fonts CDN -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS -->
@@ -27,6 +28,10 @@
                         heading: ['Outfit', 'sans-serif'],
                         headingNew: ['Outfit', 'sans-serif'],
                         bodyNew: ['Plus Jakarta Sans', 'sans-serif'],
+                        display: ['Clash Display', 'sans-serif'],
+                    },
+                    screens: {
+                        'xs': '360px',
                     }
                 }
             }
@@ -35,16 +40,34 @@
 
     <!-- GSAP for Smooth Animations -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <!-- Canvas Confetti for Success Page -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-    <style>
-        html {
-            font-size-adjust: 0.52;
+    <!-- FOUC Protection for Already Registered Users -->
+    <script>
+        const isAlreadyRegistered = localStorage.getItem('artic_registered') === 'true';
+        if (isAlreadyRegistered) {
+            document.write(`
+              <style>
+                #step1-panel, #step2-panel, #page-ending { display: none !important; }
+                #page-already-registered { display: grid !important; opacity: 1 !important; visibility: visible !important; pointer-events: auto !important; z-index: 10 !important; }
+                @media (max-width: 1023px) {
+                  #left-visual { opacity: 0 !important; pointer-events: none !important; }
+                  #right-content { margin-top: -42vh !important; border-radius: 0 !important; min-height: 100dvh !important; min-height: -webkit-fill-available !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important; }
+                }
+              </style>
+            `);
         }
+    </script>
 
+    <!-- Custom Styles -->
+    <style>
         :root {
             --green: #16a34a; 
             --green-light: #22c55e;
             --ink: #0f1a0d;
+            --font-display: 'Clash Display', -apple-system, sans-serif;
+            --font-body: 'Plus Jakarta Sans', -apple-system, sans-serif;
         }
 
         body, html {
@@ -55,118 +78,99 @@
             -moz-osx-font-smoothing: grayscale;
             -webkit-tap-highlight-color: transparent;
         }
-
-        /* Mobile specific full-screen adjustments */
+        
         @media (max-width: 1023px) {
-            .mobile-full-screen {
-                min-height: 100dvh;
-                min-height: -webkit-fill-available;
-            }
+            html { font-size-adjust: 0.52; }
         }
 
-        /* Desktop Box Shadow */
+        .font-heading-new { font-family: 'Outfit', sans-serif; }
+        .font-display { font-family: var(--font-display); }
+        .font-body-new { font-family: 'Plus Jakarta Sans', sans-serif; } 
+
+        /* Organic Curve Shadow Split */
+        .split-curve {
+            box-shadow: 0 -20px 40px rgba(0,0,0,0.06);
+            transition: all 0.4s ease-in-out;
+        }
         @media (min-width: 1024px) {
-            .desktop-box-shadow {
-                box-shadow: 0 18px 40px rgba(0,0,0,.18);
+            .split-curve {
+                box-shadow: -20px 0 50px rgba(0,0,0,0.08);
             }
         }
 
-        /* =========================================
-           GPU Promotion & Initial States
-           ========================================= */
-        section {
-            will-change: transform, opacity;
-            transform: translateZ(0);
-        }
-
-        .form-stagger { 
-            opacity: 0; 
-            will-change: transform, opacity;
-        }
-
-        /* =========================================
-           New Custom Input & Glow Styles
-           ========================================= */
-        .field-inner {
-            transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
-            background: #f8faf8;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.75rem; 
-        }
-
-        .field-inner:focus-within { 
-            border-color: var(--green-light); 
-            background: #fff; 
-            box-shadow: 0 0 0 4px rgba(34,197,94,0.1); 
-        }
-
-        .field-icon {
-            color: #9ca3af; 
-            transition: color 0.2s;
-        }
-
-        .field-inner:focus-within .field-icon,
-        .field-inner:has(.custom-input:not(:placeholder-shown)) .field-icon {
-            color: var(--green);
-        }
-
-        .custom-input {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--ink);
-            letter-spacing: 0.01em;
-            background: transparent;
-            border: none;
-            outline: none;
-            width: 100%;
-        }
-
-        @media (min-width: 640px) {
-            .custom-input {
-                font-size: 17.5px;
+        /* Mobile specific adjustments for standard state */
+        @media (max-width: 1023px) {
+            .content-container {
+                padding-bottom: env(safe-area-inset-bottom, 20px);
             }
         }
 
-        .custom-input::placeholder {
-            color: #9ca3af;
-            font-weight: 400;
+        /* Dynamic Mobile Transitions (Step 2 Active) */
+        @media (max-width: 1023px) {
+            #right-content {
+                transition: margin-top 0.6s cubic-bezier(0.25, 1, 0.5, 1),
+                            border-radius 0.6s cubic-bezier(0.25, 1, 0.5, 1),
+                            min-height 0.6s cubic-bezier(0.25, 1, 0.5, 1),
+                            padding 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            }
+            
+            #left-visual {
+                transition: opacity 0.5s ease;
+            }
+
+            .step-2-active #left-visual {
+                opacity: 0 !important;
+                pointer-events: none !important;
+            }
+
+            .step-2-active #right-content {
+                margin-top: -42vh !important; 
+                border-radius: 0 !important;
+                min-height: 100dvh !important;
+                min-height: -webkit-fill-available !important;
+                padding-top: max(1.5rem, env(safe-area-inset-top)) !important;
+                padding-bottom: max(1.5rem, env(safe-area-inset-bottom)) !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: center !important;
+                align-items: center !important;
+            }
         }
 
-        /* =========================================
-           Tick Animation Styles
-           ========================================= */
-        .field-check {
-            position: absolute;
-            right: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: var(--green-light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0; 
-            transition: opacity 0.2s ease-in-out; 
-            flex-shrink: 0;
-        }
+        /* Animations Default */
+        .intro-stagger, .form-stagger, .stagger-el { opacity: 0; will-change: transform, opacity; }
 
-        .field-check.visible {
-            opacity: 1;
+        /* Cover CTA Button (Step 1) */
+        .btn-cover {
+            position: relative; overflow: hidden; display: inline-flex; align-items: center;
+            gap: 1.25rem; background-color: #0c0c0c; color: #ffffff;
+            padding: 0.65rem 0.65rem 0.65rem 2.25rem; border-radius: 9999px;
+            font-size: 0.95rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+            border: none; cursor: pointer; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
-
-        .field-check svg {
-            color: white;
-            width: 10px;
-            height: 10px;
+        .btn-cover:hover { 
+            transform: scale(1.04); 
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25), 0 0 0 6px rgba(0, 0, 0, 0.05) !important; 
         }
+        .btn-cover:active { transform: scale(0.98); }
+        .btn-cover::before {
+            content: ''; position: absolute; top: 0; left: -150%; width: 150%; height: 100%;
+            background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.15) 50%, transparent 100%);
+            transform: skewX(-20deg); transition: left 0.7s cubic-bezier(0.16, 1, 0.3, 1); z-index: 0;
+        }
+        .btn-cover:hover::before { left: 150%; }
+        
+        .arrow-cover {
+            position: relative; z-index: 1; display: flex; align-items: center; justify-content: center;
+            width: 42px; height: 42px; border-radius: 50%; background-color: #ffffff; color: #0c0c0c; 
+            overflow: hidden;
+        }
+        .arrow-1-cover { display: flex; align-items: center; justify-content: center; animation: arrowBounce 1.2s infinite ease-in-out; }
+        @keyframes arrowBounce { 0%, 100% { transform: translateX(-3px); } 50% { transform: translateX(3px); } }
 
-        /* =========================================
-           CTA Button Styling
-           ========================================= */
-        .cta-btn {
+        /* Form CTA Button (Step 2) */
+        .btn-form {
             position: relative; overflow: hidden; display: inline-flex; align-items: center; justify-content: space-between;
             background-color: #0c0c0c; color: #ffffff;
             padding: 0.5rem 0.5rem 0.5rem 2rem; border-radius: 9999px;
@@ -175,107 +179,318 @@
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             width: 100%;
         }
-        .cta-btn:hover { 
+        .btn-form:hover { 
             transform: translateY(-2px); 
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25), 0 0 0 6px rgba(0, 0, 0, 0.05) !important; 
         }
-        .cta-btn:active { transform: translateY(1px); }
-        .cta-btn::before {
+        .btn-form:active { transform: translateY(1px); }
+        .btn-form::before {
             content: ''; position: absolute; top: 0; left: -150%; width: 150%; height: 100%;
             background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.15) 50%, transparent 100%);
             transform: skewX(-20deg); transition: left 0.7s cubic-bezier(0.16, 1, 0.3, 1); z-index: 0;
         }
-        .cta-btn:hover::before { left: 150%; }
-        .btn-text { position: relative; z-index: 1; text-align: center; width: 100%; padding-right: 1rem; }
+        .btn-form:hover::before { left: 150%; }
 
-        .arrow-wrapper {
+        .arrow-form {
             position: relative; z-index: 1; display: flex; align-items: center; justify-content: center;
-            width: 42px; height: 42px; border-radius: 50%; background-color: #ffffff; color: #0c0c0c; 
+            width: 42px; height: 42px; border-radius: 50%; background-color: #facc15; color: #000000; 
             overflow: hidden; flex-shrink: 0;
         }
-        .arrow-1 { display: flex; align-items: center; justify-content: center; transition: transform 0.3s ease; }
-        .cta-btn:hover .arrow-1 { transform: translateX(3px); }
+        .arrow-1-form { display: flex; align-items: center; justify-content: center; transition: transform 0.3s ease; }
+        .btn-form:hover .arrow-1-form { transform: translateX(3px); }
 
-        /* =========================================
-           Back Button Styles
-           ========================================= */
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.625rem;
-            color: #6b7280;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            padding: 0;
-            width: max-content;
-            transition: all 0.3s ease;
-        }
-        .back-btn:hover {
-            color: #111827;
-        }
-        .icon-circle {
-            width: 2.25rem;
-            height: 2.25rem;
-            border-radius: 50%;
-            background-color: #f3f4f6;
+        .btn-text { position: relative; z-index: 1; text-align: center; width: 100%; padding-right: 1rem; }
+
+        /* Form Specific Inputs */
+        .field-inner {
+            transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+            background: #f8faf8;
             border: 1px solid #e5e7eb;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border-radius: 0.75rem; 
+        }
+        .field-inner:focus-within { 
+            border-color: var(--green-light); 
+            background: #fff; 
+            box-shadow: 0 0 0 4px rgba(34,197,94,0.1); 
+        }
+        .field-icon { color: #9ca3af; transition: color 0.2s; }
+        .field-inner:focus-within .field-icon,
+        .field-inner:has(.custom-input:not(:placeholder-shown)) .field-icon {
+            color: var(--green);
+        }
+        .custom-input {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 16px; font-weight: 600; color: var(--ink);
+            letter-spacing: 0.01em; background: transparent; border: none; outline: none; width: 100%;
+        }
+        @media (min-width: 640px) { .custom-input { font-size: 17.5px; } }
+        .custom-input::placeholder { color: #9ca3af; font-weight: 400; }
+
+        .field-check {
+            position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+            width: 18px; height: 18px; border-radius: 50%; background: var(--green-light);
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 0.2s ease-in-out; flex-shrink: 0;
+        }
+        .field-check.visible { opacity: 1; }
+        .field-check svg { color: white; width: 10px; height: 10px; }
+
+        /* Back Button */
+        .back-btn {
+            display: inline-flex; align-items: center; gap: 0.625rem; color: #6b7280;
+            background: transparent; border: none; cursor: pointer; padding: 0;
+            width: max-content; transition: all 0.3s ease;
+        }
+        .back-btn:hover { color: #111827; }
+        .icon-circle {
+            width: 2.25rem; height: 2.25rem; border-radius: 50%; background-color: #f3f4f6;
+            border: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: center;
             transition: background-color 0.3s ease;
         }
-        .back-btn:hover .icon-circle {
-            background-color: #e5e7eb;
+        .back-btn:hover .icon-circle { background-color: #e5e7eb; }
+        .back-btn .btn-text-back { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; font-size: 14px; letter-spacing: 0.025em; }
+
+        /* Form Spinner */
+        .spinner { width: 24px; height: 24px; color: #facc15; animation: spin 1s linear infinite; margin: 9px; flex-shrink: 0; z-index: 1; }
+        .spinner.hidden { display: none; }
+        .spinner-track { opacity: 0.2; }
+        .spinner-head { opacity: 1; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        /* Social Proof Widget - Light Theme */
+        .avatar-group { display: flex; align-items: center; }
+        .avatar { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #ffffff; display: flex; align-items: center; justify-content: center; margin-left: -10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .avatar:first-child { margin-left: 0; }
+        .avatar-1 { background-color: #e6f4ea; z-index: 3; color: #16a34a; }
+        .avatar-2 { background-color: #fef9c3; z-index: 2; color: #ca8a04; }
+        .avatar-3 { background-color: #f1f5f9; z-index: 1; color: #475569; font-weight: 800; font-size: 12px; }
+
+        /* Success & Already Registered Elements */
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(34, 197, 94, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
         }
-        .back-btn .btn-text {
+        .pulse-ring-form { animation: pulseGlow 2s infinite; }
+        
+        @keyframes pulseGlowYellow {
+            0% { box-shadow: 0 0 0 0 rgba(244, 197, 66, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(244, 197, 66, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(244, 197, 66, 0); }
+        }
+        .pulse-ring-yellow { animation: pulseGlowYellow 2s infinite; }
+
+        .location-badge {
+            display: inline-flex; align-items: center; gap: 8px; background: #f8faf8; border: 1px solid #e2e8f0;
+            border-radius: 40px; padding: 8px 16px; margin: 0 auto; font-size: 12.5px; font-weight: 600; color: #334155;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03); font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        @media(min-width: 640px) { .location-badge { gap: 10px; padding: 10px 22px; font-size: 13.5px; } }
+
+        .referral-card {
+            background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 0; 
+            padding: 24px 14px 24px; margin-top: 18px; 
+            text-align: center; width: 100%;
+        }
+        @media(min-width: 640px) { .referral-card { border-radius: 0; padding: 22px 20px 22px; margin-top: 10px; } }
+
+        .marker-stroke { stroke-dasharray: 115; stroke-dashoffset: 115; transition: stroke-dashoffset 1.8s cubic-bezier(0.25, 1, 0.5, 1); }
+        .active .marker-stroke { stroke-dashoffset: 0; }
+
+        @keyframes floatGift {
+            0%, 100% { transform: translateY(0) rotate(-3deg); }
+            50% { transform: translateY(-10px) rotate(3deg); }
+        }
+        .floating-gift { display: flex; justify-content: center; align-items: center; margin: 0 auto 10px auto; animation: floatGift 3s ease-in-out infinite; filter: drop-shadow(0 8px 12px rgba(250, 204, 21, 0.35)); }
+
+        .whatsapp-btn {
+            display: flex; align-items: center; justify-content: center; gap: 8px; padding: 0 16px; height: 54px; border: none;
+            border-radius: 40px; cursor: pointer; position: relative; overflow: hidden; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background-color: #00d757; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0 auto; z-index: 1; box-shadow: 0 8px 22px rgba(0, 215, 87, 0.4);
+            animation: wpPulse 2.4s ease-in-out infinite; font-weight: 700; letter-spacing: 0.02em; color: white; font-size: 14px; width: 100%;
+        }
+        @media(min-width: 640px) { .whatsapp-btn { gap: 10px; padding: 0 24px; height: 57px; font-size: 15px; } }
+
+        @keyframes wpPulse {
+            0%, 100% { box-shadow: 0 8px 22px rgba(0, 215, 87, 0.4), 0 0 0 0 rgba(0, 215, 87, 0.55); }
+            60% { box-shadow: 0 8px 22px rgba(0, 215, 87, 0.4), 0 0 0 16px rgba(0, 215, 87, 0); }
+        }
+        .whatsapp-btn::after {
+            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.3), transparent); transform: skewX(-25deg); transition: all 0.6s ease; z-index: -1;
+        }
+        .whatsapp-btn:hover { transform: translateY(-3px); background-color: #00e65c; animation-play-state: paused; box-shadow: 0 14px 32px rgba(0, 215, 87, 0.55), 0 0 0 8px rgba(0, 215, 87, 0.08) !important; }
+        .whatsapp-btn:hover::after { left: 120%; }
+        .whatsapp-btn:active { transform: translateY(2px); box-shadow: 0 4px 10px rgba(0, 215, 87, 0.4) !important; }
+        .whatsapp-icon { width: 18px; height: 18px; fill: white; transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); flex-shrink: 0; }
+        @media(min-width: 640px) { .whatsapp-icon { width: 22px; height: 22px; } }
+
+        /* Countdown Popup */
+        .countdown-popup {
+            position: absolute;
+            top: 16px;
+            right: 16px; /* Changed to Right side */
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #facc15;
+            padding: 6px 14px;
+            border-radius: 99px;
+            box-shadow: 0 4px 14px rgba(250, 204, 21, 0.4);
             font-family: 'Plus Jakarta Sans', sans-serif;
-            font-weight: 700;
-            font-size: 14px;
-            letter-spacing: 0.025em;
-            width: auto;
-            padding-right: 0;
+            font-weight: 800;
+            font-size: 12px;
+            color: #0f1a0d;
+            opacity: 0;
+            transform: scale(0.8) translateY(-10px);
+        }
+        @media(min-width: 640px) {
+            .countdown-popup {
+                top: 24px;
+                right: 24px; /* Changed to Right side */
+                padding: 8px 18px;
+                font-size: 13.5px;
+            }
+        }
+        .clock-anim svg { color: #0f1a0d; }
+        .clock-hand {
+            transform-origin: 12px 12px;
+            animation: clockSpin 3s linear infinite;
+        }
+        @keyframes clockSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Short Mobile Screens Adjustment */
+        @media (max-height: 720px) and (max-width: 639px) {
+            #success-inner { padding-top: 24px !important; padding-bottom: 8px !important; }
+            #checkmark-circle { width: 56px !important; height: 56px !important; }
+            #checkmark-circle svg { width: 28px !important; height: 28px !important; }
+            #success-inner h2 { font-size: 24px !important; margin-bottom: 4px !important; }
+            #success-inner p { margin-bottom: 12px !important; font-size: 13px !important; }
+            #reward-inner { padding-bottom: 24px !important; }
+            .referral-card { padding: 16px 14px !important; margin-top: 12px !important; }
+            .floating-gift { margin-bottom: 8px !important; }
+            .floating-gift svg { width: 40px !important; height: 40px !important; }
+            .referral-card h3 { font-size: 18px !important; margin-bottom: 4px !important; }
+            .referral-card p { font-size: 12px !important; margin-bottom: 12px !important; }
+            .whatsapp-btn { height: 54px !important; font-size: 13px !important; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
         }
     </style>
 </head>
-<body class="text-dark bg-white lg:bg-gray-900 overflow-x-hidden">
+<body class="text-dark bg-white overflow-x-hidden">
 
-    <main class="flex flex-col min-h-[100dvh] w-full relative lg:items-center lg:justify-center">
+    <main class="flex flex-col lg:flex-row min-h-[100dvh] w-full relative">
         
-        <!-- ================= BACKGROUND IMAGE (DESKTOP ONLY) ================= -->
-        <div class="hidden lg:block absolute inset-0 w-full h-full z-0 overflow-hidden">
-            <div class="w-full h-full bg-[url('https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center"></div>
-            <div class="absolute inset-0 bg-black/60 z-10"></div>
+        <!-- ================= LEFT SIDE (VISUAL) ================= -->
+        <section id="left-visual" class="relative w-full lg:w-[55%] h-[42vh] lg:h-[100dvh] overflow-hidden flex-shrink-0 z-0 bg-gray-900 transition-all duration-300">
+            <div class="absolute inset-0 w-full h-full">
+                <div class="w-full h-full bg-[url('https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center"></div>
+            </div>
             
-            <div class="absolute top-10 left-10 z-20 flex items-center gap-2.5">
+            <div class="absolute inset-0 bg-gradient-to-b from-black/80 via-black/30 to-transparent lg:bg-gradient-to-r lg:from-black/70 lg:via-black/40 lg:to-transparent z-10"></div>
+
+            <div class="absolute top-6 left-6 lg:top-10 lg:left-10 z-20 flex items-center gap-2.5">
                 <div class="w-10 h-10 bg-primary/90 backdrop-blur-md rounded-xl flex items-center justify-center shadow-lg border border-white/10">
                     <span class="text-white font-heading font-bold text-2xl leading-none">A</span>
                 </div>
                 <span class="text-white font-heading font-bold text-xl tracking-tight drop-shadow-md">ARTIC Market.</span>
             </div>
-        </div>
+        </section>
 
-        <!-- ================= CENTERED FORM BOX ================= -->
-        <section class="relative w-full bg-white z-10 
-                        mobile-full-screen flex flex-col justify-start p-6 sm:p-10 
-                        lg:w-[540px] lg:min-h-[720px] lg:justify-center lg:rounded-[40px] lg:p-[1.7rem] desktop-box-shadow">
+        <!-- ================= RIGHT SIDE (CONTENT & FORMS) ================= -->
+        <section id="right-content" class="relative w-full lg:w-[45%] bg-white z-10 
+                        rounded-t-[40px] mt-[-40px] 
+                        lg:rounded-tr-none lg:rounded-bl-[50px] lg:rounded-tl-[50px] lg:mt-0 lg:ml-[-50px] 
+                        split-curve flex flex-col justify-start lg:justify-center items-center content-container p-4 sm:p-8">
             
-            <div class="w-full max-w-[480px] mx-auto flex flex-col relative pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] lg:pt-0 lg:pb-0">
+            <!-- ================= STEP 1: COVER PAGE ================= -->
+            <div id="step1-panel" class="w-full max-w-[500px] lg:max-w-[600px] mx-auto flex flex-col relative pt-4 pb-[110px] lg:pb-0">
                 
-                <!-- Back Button -->
+                <div class="intro-stagger flex items-center justify-between mb-8 sm:mb-10">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-green-50 border border-green-100 flex items-center justify-center text-green-600 shrink-0">
+                            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                        </div>
+                        <span class="font-bodyNew text-[13px] font-bold tracking-[0.15em] uppercase text-gray-800">Form</span>
+                    </div>
+                    <div class="inline-flex items-center justify-center gap-1.5 font-bodyNew text-[13px] font-bold text-gray-700 tracking-widest uppercase bg-gray-50 border border-gray-200 rounded-full px-3.5 py-1.5 shrink-0">
+                        📍 Rajapalayam
+                    </div>
+                </div>
+
+                <div class="intro-stagger">
+                    <h1 class="font-headingNew text-[38px] sm:text-[44px] md:text-[53px] font-black leading-[1.05] mb-4 text-gray-900 tracking-tight">
+                        Wholesale <br/><span class="text-[#22c55e]">Registration</span>
+                    </h1>
+                    <p class="font-bodyNew text-[17px] sm:text-[16px] md:text-[18px] text-gray-500 mb-8 leading-relaxed max-w-[420px] md:max-w-[36rem]">
+                        Complete this short form to secure your lifetime wholesale access code for farm-fresh vegetables.
+                    </p>
+                </div>
+
+                <div class="intro-stagger flex flex-col sm:flex-row sm:items-center justify-between md:justify-start gap-4 sm:gap-6 md:gap-8 mb-8 p-4 bg-gray-50/80 rounded-2xl border border-gray-100 md:inline-flex md:w-max md:pr-8">
+                    <div class="flex items-center gap-3 text-[14.5px] sm:text-[15px] text-gray-700 font-semibold font-bodyNew flex-1 sm:justify-center md:flex-initial md:justify-start">
+                        <div class="w-10 h-10 rounded-xl bg-white border border-gray-100 flex items-center justify-center text-gray-500 shrink-0 shadow-sm">
+                            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2"/></svg>
+                        </div>
+                        Takes ~10 seconds
+                    </div>
+                    <div class="hidden sm:block w-px h-10 bg-gray-200"></div>
+                    <div class="flex items-center gap-3 text-[14.5px] sm:text-[15px] text-gray-700 font-semibold font-bodyNew flex-1 sm:justify-center md:flex-initial md:justify-start">
+                        <div class="w-10 h-10 rounded-xl bg-[#FFF9F0] border border-[#FFE8C4] flex items-center justify-center text-[#F9A826] shrink-0 shadow-sm">
+                            <svg width="18" height="18" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"></path></svg>
+                        </div>
+                        <span class="leading-tight">Limited access closes soon</span>
+                    </div>
+                </div>
+
+                <div class="intro-stagger flex items-center justify-center sm:justify-start gap-4 mb-6 md:mb-0">
+                    <div class="avatar-group shrink-0">
+                        <div class="avatar avatar-1"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z" clip-rule="evenodd" /></svg></div>
+                        <div class="avatar avatar-2"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z" clip-rule="evenodd" /></svg></div>
+                        <div class="avatar avatar-3"><span>+</span></div>
+                    </div>
+                    <p class="font-bodyNew text-[14.5px] sm:text-[15px] font-medium text-gray-600">
+                        Join <span class="text-[#2B9348] font-bold" id="registered-count">0</span> others registered
+                    </p>
+                </div>
+
+                <div class="intro-stagger fixed bottom-0 left-0 w-full p-4 bg-white/90 backdrop-blur-xl border-t border-gray-100 z-50 
+                            lg:relative lg:p-0 lg:bg-transparent lg:backdrop-blur-none lg:border-none lg:pb-0 lg:mt-8">
+                    <button type="button" onclick="showForm()" class="btn-cover w-[calc(100%+3px)] -translate-x-[1.5px] lg:translate-x-0 lg:w-auto lg:min-w-[230px] flex justify-between items-center !py-2.5 !pl-8 !pr-2.5 mx-auto lg:mx-0">
+                        <span class="btn-text w-full text-center pl-[38px] lg:pl-[20px] text-white">Register now</span>
+                        <span class="arrow-cover !w-[38px] !h-[38px] shrink-0">
+                            <span class="arrow-1-cover">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                            </span>
+                        </span>
+                    </button>
+                    <div class="h-[env(safe-area-inset-bottom)] lg:hidden"></div>
+                </div>
+
+            </div>
+
+            <!-- ================= STEP 2: REGISTRATION FORM ================= -->
+            <div id="step2-panel" class="hidden w-full max-w-[480px] mx-auto flex-col relative pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] lg:pt-0 lg:pb-0">
+                
                 <div class="form-stagger mb-8 mt-2 lg:mt-0">
-                    <button type="button" class="back-btn" onclick="window.location.href='index.html'">
+                    <button type="button" class="back-btn" onclick="showCover()">
                         <div class="icon-circle">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M19 12H5"></path>
                                 <path d="M12 19l-7-7 7-7"></path>
                             </svg>
                         </div>
-                        <span class="btn-text">Back</span>
+                        <span class="btn-text-back">Back</span>
                     </button>
                 </div>
 
-                <!-- Form Heading -->
                 <div class="form-stagger mb-10 flex flex-col items-center text-center">
                     <h2 class="font-headingNew text-[36px] sm:text-[40px] md:text-[40px] font-black leading-tight tracking-tight mb-2">
                         <span class="text-[#22c55e]">Secure</span> <span class="text-gray-900">Your Spot.</span>
@@ -285,10 +500,8 @@
                     </p>
                 </div>
 
-                <!-- Registration Form -->
                 <form action="#" method="POST" class="space-y-6">
                     
-                    <!-- Name Input -->
                     <div class="form-stagger space-y-2">
                         <label for="name" class="block font-bodyNew font-bold text-gray-700 uppercase text-[12px] lg:text-[13px]">Full Name</label>
                         <div class="field-inner relative flex items-center px-4 py-3.5">
@@ -299,7 +512,6 @@
                         </div>
                     </div>
 
-                    <!-- Phone Number Input -->
                     <div class="form-stagger space-y-2">
                         <label for="phone" class="block font-bodyNew font-bold text-gray-700 uppercase text-[12px] lg:text-[13px]">Phone Number</label>
                         <div class="field-inner relative flex items-center">
@@ -311,7 +523,6 @@
                                 oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10); document.getElementById('phone-check').classList.toggle('visible', this.value.length === 10);"
                                 class="custom-input pl-[85px] pr-10 py-3.5">
                             
-                            <!-- Tick Animation Container -->
                             <div id="phone-check" class="field-check">
                                 <svg fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
                                     <path d="M20 6L9 17l-5-5"/>
@@ -320,7 +531,6 @@
                         </div>
                     </div>
 
-                    <!-- Location Input -->
                     <div class="form-stagger space-y-2">
                         <label for="location" class="block font-bodyNew font-bold text-gray-700 uppercase text-[12px] lg:text-[13px]">City</label>
                         <div class="field-inner relative flex items-center px-4 py-3.5">
@@ -331,13 +541,20 @@
                         </div>
                     </div>
 
-                    <!-- Submit Button -->
                     <div class="form-stagger pt-4">
-                        <button type="submit" class="cta-btn">
-                            <span class="btn-text">Confirm Registration</span>
-                            <span class="arrow-wrapper">
-                                <span class="arrow-1">
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                        <button type="submit" class="btn-form" id="submitBtn">
+                            <span class="btn-text text-white" id="btnText">Confirm Registration</span>
+                            
+                            <svg id="btnSpinner" class="spinner hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="spinner-track" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="spinner-head" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+
+                            <span class="arrow-form" id="btnArrow">
+                                <span class="arrow-1-form">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M20 6L9 17l-5-5"/>
+                                    </svg>
                                 </span>
                             </span>
                         </button>
@@ -352,47 +569,392 @@
 
                 </form>
             </div>
+
+            <!-- ================= STEP 3: THANK YOU / SUCCESS PAGE ================= -->
+            <div id="page-ending" class="hidden font-body-new w-full min-h-[100dvh] lg:min-h-0 flex flex-col justify-center items-center py-6 sm:py-0 px-3.5 sm:px-5 relative my-auto text-center">
+                
+                <!-- Days Left Countdown Popup -->
+                <div class="countdown-popup">
+                    <div class="clock-anim">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path class="clock-hand" d="M12 6v6l3 3"></path>
+                        </svg>
+                    </div>
+                    <span><span class="days-count-val">0</span> Days Left</span>
+                </div>
+
+                <div id="page-ending-card" class="w-full max-w-[520px] px-5 sm:px-6 md:px-10 flex flex-col items-center relative mx-auto text-center overflow-hidden">
+                    
+                    <div id="success-wrapper" class="w-full overflow-hidden" style="height: 0; opacity: 0;">
+                        <div id="success-inner" class="flex flex-col items-center w-full relative z-10 pt-12 sm:pt-10 pb-4 sm:pb-2 md:pb-3">
+                            
+                            <div class="relative mb-6 sm:mb-5">
+                                <div class="absolute inset-0 rounded-full border-[2.5px] border-[#22c55e] pulse-ring-form"></div>
+                                <div id="checkmark-circle" class="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-[#22c55e] to-[#16a34a] rounded-full flex items-center justify-center shadow-[0_10px_25px_rgba(34,197,94,0.35)] relative z-10">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 sm:h-10 sm:w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path id="checkmark-tick" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <h2 class="success-stagger font-heading-new text-[28px] sm:text-[32px] md:text-[36px] font-black text-[#0f1a0d] mb-2 sm:mb-1.5 tracking-tight">
+                                Thank <span class="text-[#22c55e]">You!</span>
+                            </h2>
+                            
+                            <p class="success-stagger text-slate-700 text-[13.5px] sm:text-[15px] font-semibold mb-6 sm:mb-5">Your wholesale access is fully secured.</p>
+
+                            <div class="success-stagger location-badge mb-2">
+                                📍 Rajapalayam — Location Soon
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div id="reward-wrapper" class="w-full overflow-hidden" style="height: 0; opacity: 0;">
+                        <div id="reward-inner" class="w-full pt-[0.2rem] pb-12 sm:pb-10 flex flex-col items-center">
+                            
+                            <div class="referral-card">
+                                <div class="floating-gift">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="48" height="48" class="sm:w-[56px] sm:h-[56px]">
+                                        <rect x="12" y="28" width="40" height="30" rx="3" fill="#22c55e" />
+                                        <rect x="28" y="28" width="8" height="30" fill="#facc15" />
+                                        <rect x="8" y="20" width="48" height="12" rx="2" fill="#16a34a" />
+                                        <rect x="28" y="20" width="8" height="12" fill="#eab308" />
+                                        <path d="M32 20C32 20 26 6 16 12C10 16 16 20 16 20H32Z" fill="#facc15" />
+                                        <path d="M32 20C32 20 38 6 48 12C54 16 48 20 48 20H32Z" fill="#facc15" />
+                                        <circle cx="32" cy="20" r="4" fill="#ca8a04" />
+                                    </svg>
+                                </div>
+
+                                <h3 class="text-[22px] sm:text-[1.55rem] font-black text-[#0f1a0d] mb-2 sm:mb-2.5 font-heading-new inline-block relative">
+                                    <span id="highlight-trigger" class="relative inline-block px-2">
+                                        <span class="relative z-10">Unlock Extra <span class="text-[#22c55e]">10% OFF</span></span>
+                                        <svg class="absolute inset-x-0 bottom-[2px] h-[65%] w-[104%] -left-[2%] z-0 pointer-events-none" viewBox="0 0 100 10" preserveAspectRatio="none">
+                                            <path d="M 2,5 Q 50,7 98,4" fill="none" stroke="rgba(253, 224, 71, 0.9)" stroke-width="8" stroke-linecap="round" class="marker-stroke" />
+                                        </svg>
+                                    </span>
+                                </h3>
+                                
+                                <p class="text-gray-600 text-[13px] sm:text-[14px] leading-relaxed mb-4 sm:mb-5 font-medium">
+                                    Share with <span class="text-[#22c55e] font-bold">10 friends & family</span> in Rajapalayam to unlock an exclusive discount.
+                                </p>
+
+                                <button onclick="share()" class="whatsapp-btn">
+                                    <svg class="whatsapp-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                                        <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
+                                    </svg>
+                                    <span>Share on WhatsApp</span>
+                                </button>
+                            </div>
+
+                            <a href="https://articmarket.com" class="text-slate-600 hover:text-slate-800 hover:underline text-[12px] font-bold transition-all uppercase tracking-[0.06em] flex items-center justify-center gap-1.5 mt-8 sm:mt-5">
+                                Skip to website
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ================= STEP 4: ALREADY REGISTERED PAGE ================= -->
+            <div id="page-already-registered" class="hidden font-body-new w-full min-h-[100dvh] lg:min-h-0 grid place-items-center py-10 sm:py-0 px-4 sm:px-6 md:px-8 my-auto relative text-center">
+                
+                <!-- Days Left Countdown Popup -->
+                <div class="countdown-popup">
+                    <div class="clock-anim">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path class="clock-hand" d="M12 6v6l3 3"></path>
+                        </svg>
+                    </div>
+                    <span><span class="days-count-val">0</span> Days Left</span>
+                </div>
+
+                <div id="already-registered-card" class="w-full max-w-[500px] p-6 xs:p-7 sm:p-8 md:p-10 flex flex-col items-center text-center my-auto relative overflow-hidden" style="opacity: 0; transform: translateY(40px) scale(0.96);">
+                    
+                    <div class="relative mb-5 sm:mb-6">
+                        <div class="absolute inset-0 rounded-full border-[2.5px] border-[#facc15] pulse-ring-yellow"></div>
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-[#facc15] to-[#eab308] rounded-full flex items-center justify-center shadow-[0_10px_25px_rgba(250,204,21,0.35)] relative z-10">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 sm:h-10 sm:w-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <polyline points="16 11 18 13 22 9"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <h2 class="stagger-el font-headingNew text-[26px] xs:text-[28px] sm:text-[32px] md:text-[36px] font-black text-[#0f1a0d] mb-5 sm:mb-6 leading-tight tracking-tight">
+                        You've already <br/><span class="text-[#eab308]">Registered!</span>
+                    </h2>
+
+                    <div class="stagger-el location-badge mb-7 sm:mb-8">
+                        📍 Rajapalayam — Location Soon
+                    </div>
+
+                    <div class="stagger-el w-full pt-6 border-t border-gray-100 flex flex-col items-center">
+                        
+                        <h3 class="text-[22px] sm:text-[24px] font-black text-[#0f1a0d] mb-2 sm:mb-3 font-headingNew">
+                            Share with Friends
+                        </h3>
+                        
+                        <p class="text-gray-500 text-[13.5px] sm:text-[14.5px] md:text-[15px] leading-relaxed mb-6 font-medium max-w-[360px]">
+                            Invite <span class="text-[#22c55e] font-bold">10 friends & family</span> in Rajapalayam to unlock an exclusive <span class="text-[#22c55e] font-bold">10% discount!</span>
+                        </p>
+
+                        <button onclick="share()" class="whatsapp-btn">
+                            <svg class="whatsapp-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                                <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
+                            </svg>
+                            <span>Share on WhatsApp</span>
+                        </button>
+                    </div>
+
+                    <div class="stagger-el mt-6 sm:mt-7 w-full">
+                        <a href="https://articmarket.com" class="text-slate-500 hover:text-slate-800 hover:underline text-[12.5px] sm:text-[13px] font-bold transition-all uppercase tracking-[0.06em] flex items-center justify-center gap-1.5">
+                            Skip to website
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
         </section>
+
     </main>
 
-    <!-- GSAP Animations Logic -->
+    <!-- Script Logic -->
     <script>
-        window.addEventListener('load', () => {
-            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-            if (prefersReducedMotion) {
-                gsap.set('.form-stagger, section', { opacity: 1, y: 0 });
+        // WhatsApp Share Logic
+        function share() {
+            const text = "Hey! 🥦 I just got VIP wholesale access to farm-fresh veggies at ARTIC MARKET in Rajapalayam. \n\nRegister using my link and we BOTH get an extra 10% OFF! 🎉🍅 \n\nGet it here: [Insert Link]";
+            const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+            window.open(url, '_blank');
+        }
+
+        // Days Left Countdown Calculation Logic
+        function initCountdown() {
+            const openingDateStr = '02.08.2026';
+            
+            const parts = openingDateStr.split('.');
+            if (parts.length === 3) {
+                const targetDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}T00:00:00`);
+                const now = new Date();
+                const diffTime = targetDate - now;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                
+                const badges = document.querySelectorAll('.days-count-val');
+                const popupContainers = document.querySelectorAll('.countdown-popup');
+                
+                if (diffDays > 0) {
+                    badges.forEach(b => b.innerText = diffDays);
+                } else {
+                    popupContainers.forEach(p => p.style.display = 'none');
+                }
+            }
+        }
+
+        // Cover Page (Step 1) Initial Setup or Already Registered Setup
+        window.addEventListener('DOMContentLoaded', () => {
+            initCountdown();
+
+            if (isAlreadyRegistered) {
+                // Initialize Already Registered Page Entry
+                document.body.classList.add('step-2-active');
+                document.getElementById('step1-panel').classList.replace('flex', 'hidden');
+                document.getElementById('step2-panel').classList.replace('flex', 'hidden');
+                document.getElementById('page-ending').classList.replace('flex', 'hidden');
+                document.getElementById('page-already-registered').classList.replace('hidden', 'grid');
+                
+                const tl = gsap.timeline({ delay: 0.2 });
+                tl.to("#already-registered-card", { opacity: 1, y: 0, scale: 1, duration: 1.0, ease: "back.out(1.2)" })
+                  .to("#page-already-registered .stagger-el", { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: "power2.out" }, "-=0.4")
+                  .to("#page-already-registered .countdown-popup", { opacity: 1, scale: 1, y: 0, duration: 0.6, ease: "back.out(1.6)" }, "+=0.2");
                 return;
             }
 
-            gsap.set("section", { opacity: 1 });
-            gsap.set(".form-stagger", { opacity: 0, y: 16 });
+            const tl = gsap.timeline();
+            const isMobile = window.matchMedia('(max-width: 1023px)').matches;
 
-            requestAnimationFrame(() => {
-                gsap.to(".form-stagger", {
-                    opacity: 1,
-                    y: 0,
-                    stagger: 0.08,
-                    duration: 0.55,
-                    ease: "power2.out"
+            if (prefersReducedMotion) {
+                gsap.set('#step1-panel, .intro-stagger', { opacity: 1, clearProps: 'transform' });
+                document.getElementById('registered-count').innerText = '2,564';
+                return;
+            }
+
+            gsap.set('#step1-panel', isMobile ? { opacity: 0 } : { opacity: 0, y: 30 });
+            gsap.set('.intro-stagger', { opacity: 0, y: 20 });
+
+            tl.to('#step1-panel',
+                isMobile
+                    ? { opacity: 1, duration: 1.0, ease: 'power3.out' }
+                    : { opacity: 1, y: 0, duration: 1.0, ease: 'power3.out', clearProps: 'transform' },
+                0.2
+            );
+
+            tl.to('.intro-stagger', { opacity: 1, y: 0, duration: 0.8, stagger: 0.1, ease: 'power3.out', clearProps: 'transform' }, 0.5);
+
+            const countObj = { val: 0 };
+            tl.to(countObj, {
+                val: 2564, duration: 2.0, ease: "power3.out",
+                onUpdate: () => document.getElementById('registered-count').innerText = Math.round(countObj.val).toLocaleString()
+            }, 0.7);
+
+            // Form inputs auto-scroll logic on mobile
+            document.querySelectorAll('input').forEach(input => {
+                input.addEventListener('focus', function() {
+                    if (window.innerWidth < 1024) {
+                        setTimeout(() => this.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
+                    }
                 });
             });
         });
 
-        // Scroll-Into-View (Auto-scroll / Keyboard Panning) feature for mobile screens
-        window.addEventListener('DOMContentLoaded', () => {
-            const inputs = document.querySelectorAll('input');
+        // Flow Functions
+        function showForm() {
+            if (prefersReducedMotion) {
+                togglePanels(true);
+                return;
+            }
+
+            const isMobile = window.matchMedia('(max-width: 1023px)').matches;
+            const tl = gsap.timeline();
             
-            inputs.forEach(input => {
-                input.addEventListener('focus', function() {
-                    // Apply specifically for mobile/tablet screens (Tailwind's lg breakpoint is 1024px)
-                    if (window.innerWidth < 1024) {
-                        setTimeout(() => {
-                            this.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        }, 300); // 300ms delay allows the virtual keyboard enough time to pop up completely
-                    }
-                });
-            });
+            // Fade out Step 1
+            tl.to('.intro-stagger', { opacity: 0, y: -10, duration: 0.3, stagger: 0.05, ease: 'power2.in' })
+              .to('#step1-panel', { opacity: 0, duration: 0.2 }, "-=0.2")
+              .call(() => togglePanels(true));
+              
+            if (isMobile) {
+                tl.fromTo('#step2-panel', { opacity: 0 }, { opacity: 1, duration: 0.3 }, "+=0.35")
+                  .fromTo('.form-stagger', { opacity: 0, y: 16 }, { opacity: 1, y: 0, stagger: 0.08, duration: 0.55, ease: 'power2.out', clearProps: 'transform' }, "-=0.1");
+            } else {
+                tl.fromTo('#step2-panel', { opacity: 0 }, { opacity: 1, duration: 0.3 })
+                  .fromTo('.form-stagger', { opacity: 0, y: 16 }, { opacity: 1, y: 0, stagger: 0.08, duration: 0.55, ease: 'power2.out', clearProps: 'transform' }, "-=0.1");
+            }
+        }
+
+        function showCover() {
+            if (prefersReducedMotion) {
+                togglePanels(false);
+                return;
+            }
+
+            const isMobile = window.matchMedia('(max-width: 1023px)').matches;
+            const tl = gsap.timeline();
+            
+            // Fade out Step 2
+            tl.to('.form-stagger', { opacity: 0, y: 10, duration: 0.3, stagger: 0.05, ease: 'power2.in' })
+              .to('#step2-panel', { opacity: 0, duration: 0.2 }, "-=0.2")
+              .call(() => togglePanels(false));
+              
+            if (isMobile) {
+                tl.fromTo('#step1-panel', { opacity: 0 }, { opacity: 1, duration: 0.3 }, "+=0.35")
+                  .fromTo('.intro-stagger', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: 'power3.out', clearProps: 'transform' }, "-=0.1");
+            } else {
+                tl.fromTo('#step1-panel', { opacity: 0 }, { opacity: 1, duration: 0.3 })
+                  .fromTo('.intro-stagger', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: 'power3.out', clearProps: 'transform' }, "-=0.1");
+            }
+        }
+
+        function togglePanels(toForm) {
+            const step1 = document.getElementById('step1-panel');
+            const step2 = document.getElementById('step2-panel');
+
+            if (toForm) {
+                step1.classList.replace('flex', 'hidden');
+                step2.classList.replace('hidden', 'flex');
+                document.body.classList.add('step-2-active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                step2.classList.replace('flex', 'hidden');
+                step1.classList.replace('hidden', 'flex');
+                document.body.classList.remove('step-2-active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function showSuccessPage() {
+            const step2 = document.getElementById('step2-panel');
+            const pageEnding = document.getElementById('page-ending');
+
+            // Hide Form and Show Success Panel
+            step2.classList.replace('flex', 'hidden');
+            pageEnding.classList.replace('hidden', 'flex');
+            document.body.classList.add('step-2-active');
+            window.scrollTo({ top: 0, behavior: 'instant' });
+
+            // Pre-render states for the Success sequence (matching reference code EXACTLY)
+            gsap.set(["#checkmark-circle", ".pulse-ring-form"], { scale: 0 });
+            gsap.set("#page-ending-card", { opacity: 0, y: 30 });
+            gsap.set("#success-wrapper", { height: 0, opacity: 0 });
+            gsap.set("#success-inner", { y: 40 });
+            gsap.set("#checkmark-tick", { strokeDasharray: 24, strokeDashoffset: 24 });
+            gsap.set(".success-stagger", { opacity: 0, y: 15 });
+            gsap.set("#reward-wrapper", { height: 0, opacity: 0 });
+            gsap.set("#reward-inner", { y: -50 });
+            document.getElementById('highlight-trigger').classList.remove('active');
+
+            // Play Success Page Animations Timeline (exact durations & easings from reference code)
+            const tl = gsap.timeline({ delay: 0.2 });
+
+            tl.to("#page-ending-card", { opacity: 1, y: 0, duration: 1.5, ease: "power4.out" })
+              .to("#success-wrapper", { height: "auto", opacity: 1, duration: 1.0, ease: "power4.inOut" }, "<")
+              .to("#success-inner", { y: 0, duration: 1.0, ease: "power4.out" }, "<0.1") 
+              
+              .to(["#checkmark-circle", ".pulse-ring-form"], { scale: 1, duration: 0.5, ease: "back.out(1.6)" }, "-=0.3")
+              .to("#checkmark-tick", { strokeDashoffset: 0, duration: 0.35, ease: "power2.out" }, "<0.1")
+              .to(".success-stagger", { opacity: 1, y: 0, duration: 0.45, stagger: 0.1, ease: "power2.out" }, "-=0.1")
+              .add(() => {
+                  // Dynamically calculate the center of the right screen panel for confetti burst
+                  const cardRect = document.getElementById('page-ending-card').getBoundingClientRect();
+                  const originX = (cardRect.left + (cardRect.width / 2)) / window.innerWidth;
+                  
+                  confetti({ particleCount: 130, spread: 80, origin: { y: 0.62, x: originX }, colors: ['#ef4444', '#3b82f6', '#facc15', '#22c55e', '#a855f7', '#ec4899'] });
+              }, "-=0.2")
+              
+              .to({}, { duration: 1.0 }) 
+              .addLabel("showReward")
+              
+              .to("#reward-wrapper", { height: "auto", duration: 1.4, ease: "power4.inOut" }, "showReward")
+              .to("#reward-inner", { y: 0, duration: 1.4, ease: "power4.inOut" }, "showReward")
+              .to("#reward-wrapper", { opacity: 1, duration: 1.0, ease: "power2.out" }, "showReward+=0.4")
+              
+              .add(() => {
+                  document.getElementById('highlight-trigger').classList.add('active');
+              }, "showReward+=1.2")
+              .to("#page-ending .countdown-popup", { opacity: 1, scale: 1, y: 0, duration: 0.6, ease: "back.out(1.6)" }, "showReward+=1.5");
+        }
+
+        // Submitting Animation Logic
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const btn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btnText');
+            const btnArrow = document.getElementById('btnArrow');
+            const btnSpinner = document.getElementById('btnSpinner');
+
+            btnText.textContent = 'Submitting...';
+            btnArrow.style.display = 'none';
+            btnSpinner.classList.remove('hidden');
+            btn.style.pointerEvents = 'none';
+
+            // Mark as registered in LocalStorage
+            localStorage.setItem('artic_registered', 'true');
+
+            // Delay submission visually then display Thank You Page
+            setTimeout(() => {
+                showSuccessPage();
+            }, 1200);
         });
     </script>
 </body>
