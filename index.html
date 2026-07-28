@@ -5,10 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ARTIC Market | Wholesale Registration</title>
     
-    <!-- Fonts CDN -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS -->
@@ -21,14 +20,17 @@
                         primary: '#2B9348',
                         primaryDark: '#1E6F34',
                         accent: '#F9A826',
-                        dark: '#222222'
+                        dark: '#222222',
+                        brandGreen: '#22C55E',
+                        brandDark: '#0F1A0D',
+                        brandYellow: '#FACC15',
+                        brandLightGray: '#F8FAF8'
                     },
                     fontFamily: {
                         sans: ['Plus Jakarta Sans', 'sans-serif'],
                         heading: ['Outfit', 'sans-serif'],
                         headingNew: ['Outfit', 'sans-serif'],
                         bodyNew: ['Plus Jakarta Sans', 'sans-serif'],
-                        display: ['Clash Display', 'sans-serif'],
                     }
                 }
             }
@@ -37,34 +39,16 @@
 
     <!-- GSAP for Smooth Animations -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <!-- Canvas Confetti for Success Page -->
+    
+    <!-- Canvas Confetti for Success Polish -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-    <!-- FOUC Protection for Already Registered Users -->
-    <script>
-        const isAlreadyRegistered = localStorage.getItem('artic_registered') === 'true';
-        if (isAlreadyRegistered) {
-            document.write(`
-              <style>
-                #step1-panel, #step2-panel, #page-ending { display: none !important; }
-                #page-already-registered { display: grid !important; opacity: 1 !important; visibility: visible !important; pointer-events: auto !important; z-index: 10 !important; }
-                @media (max-width: 1023px) {
-                  #left-visual { opacity: 0 !important; pointer-events: none !important; }
-                  #right-content { margin-top: -42vh !important; border-radius: 0 !important; min-height: 100dvh !important; min-height: -webkit-fill-available !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important; }
-                }
-              </style>
-            `);
-        }
-    </script>
-
-    <!-- Custom Styles -->
+    <!-- Custom Styles for Animations & Polish -->
     <style>
         :root {
             --green: #16a34a; 
             --green-light: #22c55e;
             --ink: #0f1a0d;
-            --font-display: 'Clash Display', -apple-system, sans-serif;
-            --font-body: 'Plus Jakarta Sans', -apple-system, sans-serif;
         }
 
         body, html {
@@ -79,10 +63,6 @@
         @media (max-width: 1023px) {
             html { font-size-adjust: 0.52; }
         }
-
-        .font-heading-new { font-family: 'Outfit', sans-serif; }
-        .font-display { font-family: var(--font-display); }
-        .font-body-new { font-family: 'Plus Jakarta Sans', sans-serif; } 
 
         /* Organic Curve Shadow Split */
         .split-curve {
@@ -102,9 +82,12 @@
             }
         }
 
-        /* Dynamic Mobile Transitions (Step 2 Active) */
+        /* =========================================
+           Dynamic Mobile Transitions (Step 2 Active)
+           ========================================= */
         @media (max-width: 1023px) {
             #right-content {
+                /* Add smooth transitions to standard layout properties to create the slide effect */
                 transition: margin-top 0.6s cubic-bezier(0.25, 1, 0.5, 1),
                             border-radius 0.6s cubic-bezier(0.25, 1, 0.5, 1),
                             min-height 0.6s cubic-bezier(0.25, 1, 0.5, 1),
@@ -116,28 +99,30 @@
             }
 
             .step-2-active #left-visual {
+                /* Gently fade out the visual instead of abrupt display none */
                 opacity: 0 !important;
                 pointer-events: none !important;
             }
 
             .step-2-active #right-content {
+                /* Pulls the white panel flawlessly to the top edge covering the visual entirely */
                 margin-top: -42vh !important; 
                 border-radius: 0 !important;
                 min-height: 100dvh !important;
                 min-height: -webkit-fill-available !important;
                 padding-top: max(1.5rem, env(safe-area-inset-top)) !important;
                 padding-bottom: max(1.5rem, env(safe-area-inset-bottom)) !important;
-                display: flex !important;
-                flex-direction: column !important;
-                justify-content: center !important;
-                align-items: center !important;
+                display: flex;
+                align-items: center;
             }
         }
 
         /* Animations Default */
-        .intro-stagger, .form-stagger, .stagger-el { opacity: 0; will-change: transform, opacity; }
+        .intro-stagger, .form-stagger { opacity: 0; will-change: transform, opacity; }
 
-        /* Cover CTA Button (Step 1) */
+        /* =========================================
+           Cover CTA Button (Step 1)
+           ========================================= */
         .btn-cover {
             position: relative; overflow: hidden; display: inline-flex; align-items: center;
             gap: 1.25rem; background-color: #0c0c0c; color: #ffffff;
@@ -166,7 +151,9 @@
         .arrow-1-cover { display: flex; align-items: center; justify-content: center; animation: arrowBounce 1.2s infinite ease-in-out; }
         @keyframes arrowBounce { 0%, 100% { transform: translateX(-3px); } 50% { transform: translateX(3px); } }
 
-        /* Form CTA Button (Step 2) */
+        /* =========================================
+           Form CTA Button (Step 2)
+           ========================================= */
         .btn-form {
             position: relative; overflow: hidden; display: inline-flex; align-items: center; justify-content: space-between;
             background-color: #0c0c0c; color: #ffffff;
@@ -198,7 +185,9 @@
 
         .btn-text { position: relative; z-index: 1; text-align: center; width: 100%; padding-right: 1rem; }
 
-        /* Form Specific Inputs */
+        /* =========================================
+           Form Specific Styles
+           ========================================= */
         .field-inner {
             transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
             background: #f8faf8;
@@ -262,94 +251,33 @@
         .avatar-2 { background-color: #fef9c3; z-index: 2; color: #ca8a04; }
         .avatar-3 { background-color: #f1f5f9; z-index: 1; color: #475569; font-weight: 800; font-size: 12px; }
 
-        /* Success & Already Registered Elements */
-        @keyframes pulseGlow {
-            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
-            70% { box-shadow: 0 0 0 15px rgba(34, 197, 94, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
-        }
-        .pulse-ring-form { animation: pulseGlow 2s infinite; }
+        /* =========================================
+           Thank You / Success Page Styles
+           ========================================= */
         
-        @keyframes pulseGlowYellow {
-            0% { box-shadow: 0 0 0 0 rgba(244, 197, 66, 0.4); }
-            70% { box-shadow: 0 0 0 15px rgba(244, 197, 66, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(244, 197, 66, 0); }
-        }
-        .pulse-ring-yellow { animation: pulseGlowYellow 2s infinite; }
-
-        .location-badge {
-            display: inline-flex; align-items: center; gap: 8px; background: #f8faf8; border: 1px solid #e2e8f0;
-            border-radius: 40px; padding: 8px 16px; margin: 0 auto; font-size: 12.5px; font-weight: 600; color: #334155;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03); font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-        @media(min-width: 640px) { .location-badge { gap: 10px; padding: 10px 22px; font-size: 13.5px; } }
-
-        .referral-card {
-            background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 0; 
-            padding: 24px 14px 24px; margin-top: 18px; 
-            text-align: center; width: 100%;
-        }
-        @media(min-width: 640px) { .referral-card { border-radius: 0; padding: 22px 20px 22px; margin-top: 10px; } }
-
-        .marker-stroke { stroke-dasharray: 115; stroke-dashoffset: 115; transition: stroke-dashoffset 1.8s cubic-bezier(0.25, 1, 0.5, 1); }
-        .active .marker-stroke { stroke-dashoffset: 0; }
-
-        @keyframes floatGift {
-            0%, 100% { transform: translateY(0) rotate(-3deg); }
-            50% { transform: translateY(-10px) rotate(3deg); }
-        }
-        .floating-gift { display: flex; justify-content: center; align-items: center; margin: 0 auto 10px auto; animation: floatGift 3s ease-in-out infinite; filter: drop-shadow(0 8px 12px rgba(250, 204, 21, 0.35)); }
-
-        .whatsapp-btn {
-            display: flex; align-items: center; justify-content: center; gap: 8px; padding: 0 16px; height: 54px; border: none;
-            border-radius: 40px; cursor: pointer; position: relative; overflow: hidden; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background-color: #00d757; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0 auto; z-index: 1; box-shadow: 0 8px 22px rgba(0, 215, 87, 0.4);
-            animation: wpPulse 2.4s ease-in-out infinite; font-weight: 700; letter-spacing: 0.02em; color: white; font-size: 14px; width: 100%;
-        }
-        @media(min-width: 640px) { .whatsapp-btn { gap: 10px; padding: 0 24px; height: 57px; font-size: 15px; } }
-
-        @keyframes wpPulse {
-            0%, 100% { box-shadow: 0 8px 22px rgba(0, 215, 87, 0.4), 0 0 0 0 rgba(0, 215, 87, 0.55); }
-            60% { box-shadow: 0 8px 22px rgba(0, 215, 87, 0.4), 0 0 0 16px rgba(0, 215, 87, 0); }
-        }
-        .whatsapp-btn::after {
-            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.3), transparent); transform: skewX(-25deg); transition: all 0.6s ease; z-index: -1;
-        }
-        .whatsapp-btn:hover { transform: translateY(-3px); background-color: #00e65c; animation-play-state: paused; box-shadow: 0 14px 32px rgba(0, 215, 87, 0.55), 0 0 0 8px rgba(0, 215, 87, 0.08) !important; }
-        .whatsapp-btn:hover::after { left: 120%; }
-        .whatsapp-btn:active { transform: translateY(2px); box-shadow: 0 4px 10px rgba(0, 215, 87, 0.4) !important; }
-        .whatsapp-icon { width: 18px; height: 18px; fill: white; transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); flex-shrink: 0; }
-        @media(min-width: 640px) { .whatsapp-icon { width: 22px; height: 22px; } }
-
-        /* Countdown Popup */
+        /* New Days Left Badge UI & Animation */
         .countdown-popup {
-            position: absolute;
-            top: 16px;
-            right: 16px; /* Changed to Right side */
-            z-index: 50;
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             background: #facc15;
-            padding: 6px 14px;
+            padding: 10px 20px;
             border-radius: 99px;
             box-shadow: 0 4px 14px rgba(250, 204, 21, 0.4);
             font-family: 'Plus Jakarta Sans', sans-serif;
             font-weight: 800;
-            font-size: 12px;
+            font-size: 15px;
             color: #0f1a0d;
-            opacity: 0;
-            transform: scale(0.8) translateY(-10px);
         }
-        @media(min-width: 640px) {
+
+        /* Desktop Only Badge Changes */
+        @media (min-width: 1024px) {
             .countdown-popup {
-                top: 24px;
-                right: 24px; /* Changed to Right side */
-                padding: 8px 18px;
-                font-size: 13.5px;
+                padding: 9px 15px;
+                font-size: 14px;
             }
         }
+
         .clock-anim svg { color: #0f1a0d; }
         .clock-hand {
             transform-origin: 12px 12px;
@@ -360,26 +288,122 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Short Mobile Screens Adjustment */
-        @media (max-height: 720px) and (max-width: 639px) {
-            #success-inner { padding-top: 24px !important; padding-bottom: 8px !important; }
-            #checkmark-circle { width: 56px !important; height: 56px !important; }
-            #checkmark-circle svg { width: 28px !important; height: 28px !important; }
-            #success-inner h2 { font-size: 24px !important; margin-bottom: 4px !important; }
-            #success-inner p { margin-bottom: 12px !important; font-size: 13px !important; }
-            #reward-inner { padding-bottom: 24px !important; }
-            .referral-card { padding: 16px 14px !important; margin-top: 12px !important; }
-            .floating-gift { margin-bottom: 8px !important; }
-            .floating-gift svg { width: 40px !important; height: 40px !important; }
-            .referral-card h3 { font-size: 18px !important; margin-bottom: 4px !important; }
-            .referral-card p { font-size: 12px !important; margin-bottom: 12px !important; }
-            .whatsapp-btn { height: 54px !important; font-size: 13px !important; }
+        /* Pulsing Green Glow Animation for Checkmark */
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(34, 197, 94, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
         }
+        .pulse-ring-form { 
+            animation: pulseGlow 2s infinite; 
+        }
+
+        .floating-gift {
+            display: inline-block;
+            animation: float-gift 3s ease-in-out infinite;
+        }
+        @keyframes float-gift {
+            0%, 100% { transform: translateY(0) rotate(-3deg); }
+            50% { transform: translateY(-10px) rotate(3deg); }
+        }
+
+        /* Update: Unified WhatsApp Button CSS */
+        .whatsapp-btn {
+            display: flex; align-items: center; justify-content: center; gap: 8px; padding: 0 16px; height: 60px; border: none;
+            border-radius: 40px; cursor: pointer; position: relative; overflow: hidden; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background-color: #00d757; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0 auto; z-index: 1; box-shadow: 0 8px 22px rgba(0, 215, 87, 0.4);
+            animation: wpPulse 2.4s ease-in-out infinite; font-weight: 700; letter-spacing: 0.02em; color: white; font-size: 14px; width: 100%; text-decoration: none;
+        }
+
+        /* Radar / Pulse Animation */
+        @keyframes wpPulse {
+            0%, 100% { box-shadow: 0 8px 22px rgba(0, 215, 87, 0.4), 0 0 0 0 rgba(0, 215, 87, 0.55); }
+            60% { box-shadow: 0 8px 22px rgba(0, 215, 87, 0.4), 0 0 0 16px rgba(0, 215, 87, 0); }
+        }
+
+        /* Diagonal Shine Effect (Hidden left of the button) */
+        .whatsapp-btn::after {
+            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.3), transparent); transform: skewX(-25deg); transition: all 0.6s ease; z-index: -1;
+        }
+
+        /* Hover Animation Triggers */
+        .whatsapp-btn:hover { 
+            transform: translateY(-3px); 
+            background-color: #00e65c; 
+            animation-play-state: paused; 
+            box-shadow: 0 14px 32px rgba(0, 215, 87, 0.55), 0 0 0 8px rgba(0, 215, 87, 0.08) !important; 
+        }
+
+        /* Shine effect sweeping across the button on hover */
+        .whatsapp-btn:hover::after { left: 120%; }
+
+        /* Active (Click) state */
+        .whatsapp-btn:active { 
+            transform: translateY(2px); 
+            box-shadow: 0 4px 10px rgba(0, 215, 87, 0.4) !important; 
+        }
+
+        /* =========================================
+           Already Registered Page Styles
+           ========================================= */
+
+        /* Mobile Adjustments specific to Already Registered State (30% / 70% split) */
+        @media (max-width: 1023px) {
+            .is-already-registered #left-visual {
+                height: 30vh !important;
+            }
+            .is-already-registered #right-content {
+                min-height: 70vh !important;
+            }
+        }
+
+        /* Panel Visibility Controller */
+        .is-already-registered #step1-panel, 
+        .is-already-registered #step2-panel, 
+        .is-already-registered #step3-panel { display: none !important; }
+        
+        .is-already-registered #step4-panel { display: flex !important; }
+        
+        /* By default step4 is hidden */
+        #step4-panel { display: none; }
+
+        @keyframes pulseGlowYellow {
+            0% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(250, 204, 21, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0); }
+        }
+        .pulse-ring-yellow { 
+            animation: pulseGlowYellow 2s infinite; 
+        }
+
+        /* Simple Revealing Animation for Step 4 Items */
+        @keyframes step4FadeUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .is-already-registered .step4-anim {
+            opacity: 0;
+            animation: step4FadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .is-already-registered .step4-anim:nth-child(1) { animation-delay: 0.1s; }
+        .is-already-registered .step4-anim:nth-child(2) { animation-delay: 0.2s; }
+        .is-already-registered .step4-anim:nth-child(3) { animation-delay: 0.3s; }
+        .is-already-registered .step4-anim:nth-child(4) { animation-delay: 0.4s; }
+        .is-already-registered .step4-anim:nth-child(5) { animation-delay: 0.5s; }
+        .is-already-registered .step4-anim:nth-child(6) { animation-delay: 0.6s; }
 
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
         }
     </style>
+    
+    <!-- FOUC Protection for Already Registered Users -->
+    <script>
+        if (localStorage.getItem('artic_registered') === 'true') {
+            document.documentElement.classList.add('is-already-registered');
+        }
+    </script>
 </head>
 <body class="text-dark bg-white overflow-x-hidden">
 
@@ -387,12 +411,15 @@
         
         <!-- ================= LEFT SIDE (VISUAL) ================= -->
         <section id="left-visual" class="relative w-full lg:w-[55%] h-[42vh] lg:h-[100dvh] overflow-hidden flex-shrink-0 z-0 bg-gray-900 transition-all duration-300">
+            <!-- Static Background Image -->
             <div class="absolute inset-0 w-full h-full">
                 <div class="w-full h-full bg-[url('https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center"></div>
             </div>
             
+            <!-- Dark Gradient Overlay -->
             <div class="absolute inset-0 bg-gradient-to-b from-black/80 via-black/30 to-transparent lg:bg-gradient-to-r lg:from-black/70 lg:via-black/40 lg:to-transparent z-10"></div>
 
+            <!-- Brand Logo (Top Left) -->
             <div class="absolute top-6 left-6 lg:top-10 lg:left-10 z-20 flex items-center gap-2.5">
                 <div class="w-10 h-10 bg-primary/90 backdrop-blur-md rounded-xl flex items-center justify-center shadow-lg border border-white/10">
                     <span class="text-white font-heading font-bold text-2xl leading-none">A</span>
@@ -567,214 +594,164 @@
                 </form>
             </div>
 
-            <!-- ================= STEP 3: THANK YOU / SUCCESS PAGE ================= -->
-            <div id="page-ending" class="hidden font-body-new w-full h-full flex flex-col justify-center items-center px-3.5 sm:px-5 relative text-center overflow-hidden">
+            <!-- ================= STEP 3: SUCCESS PAGE ================= -->
+            <div id="step3-panel" class="hidden w-full max-w-[520px] h-full mx-auto flex-col justify-center items-center relative pt-[calc(3rem+env(safe-area-inset-top,0px))] lg:pt-4 pb-[env(safe-area-inset-bottom)] my-auto min-h-[70vh] lg:min-h-full">
                 
-                <!-- Days Left Countdown Popup -->
-                <div class="countdown-popup">
+                <!-- NEW Days Left Countdown UI (Functionality & Position Preserved) -->
+                <!-- Adjusted mobile positioning: -top-[0.1rem] -left-[0.5rem] while keeping desktop lg:-top-2 lg:-left-4 -->
+                <div class="countdown-badge countdown-popup absolute -top-[0.1rem] -left-[0.5rem] lg:-top-2 lg:-left-4 z-50 opacity-0 transform-gpu" id="countdown-badge">
                     <div class="clock-anim">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="12" cy="12" r="10"></circle>
                             <path class="clock-hand" d="M12 6v6l3 3"></path>
                         </svg>
                     </div>
-                    <span><span class="days-count-val">0</span> Days Left</span>
+                    3 Days Left
                 </div>
 
-                <div id="page-ending-card" class="w-full max-w-[520px] px-5 sm:px-6 md:px-10 flex flex-col items-center relative mx-auto text-center overflow-hidden">
+                <!-- Success Intro -->
+                <div class="w-full flex flex-col items-center text-center">
                     
-                    <div id="success-wrapper" class="w-full overflow-hidden" style="height: 0; opacity: 0;">
-                        <div id="success-inner" class="flex flex-col items-center w-full relative z-10 pt-6 sm:pt-8 pb-2 md:pb-3">
-                            
-                            <div class="relative mb-6 sm:mb-5">
-                                <div class="absolute inset-0 rounded-full border-[2.5px] border-[#22c55e] pulse-ring-form"></div>
-                                <div id="checkmark-circle" class="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-[#22c55e] to-[#16a34a] rounded-full flex items-center justify-center shadow-[0_10px_25px_rgba(34,197,94,0.35)] relative z-10">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 sm:h-10 sm:w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path id="checkmark-tick" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-                                    </svg>
-                                </div>
-                            </div>
-
-                            <h2 class="success-stagger font-heading-new text-[28px] sm:text-[32px] md:text-[36px] font-black text-[#0f1a0d] mb-2 sm:mb-1.5 tracking-tight">
-                                Thank <span class="text-[#22c55e]">You!</span>
-                            </h2>
-                            
-                            <p class="success-stagger text-slate-700 text-[13.5px] sm:text-[15px] font-semibold mb-6 sm:mb-5">Your wholesale access is fully secured.</p>
-
-                            <div class="success-stagger location-badge mb-2">
-                                📍 Rajapalayam — Location Soon
-                            </div>
-
+                    <!-- NEW TICK UI WITH PULSING RING -->
+                    <div class="success-icon-wrapper relative w-20 h-20 mb-7 transform-gpu">
+                        <!-- Pulsing Ring -->
+                        <div class="pulse-ring-form absolute inset-0 rounded-full border-[2.5px] border-[#22c55e]"></div>
+                        
+                        <!-- Green Circle Background -->
+                        <div class="success-icon-circle absolute inset-0 bg-gradient-to-br from-[#22c55e] to-[#16a34a] rounded-full flex items-center justify-center shadow-[0_10px_25px_rgba(34,197,94,0.35)] z-10">
+                            <!-- SVG Tick (Drawn by GSAP) -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path class="checkmark-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" style="stroke-dasharray: 24; stroke-dashoffset: 24;" />
+                            </svg>
                         </div>
                     </div>
-
-                    <div id="reward-wrapper" class="w-full overflow-hidden" style="height: 0; opacity: 0;">
-                        <div id="reward-inner" class="w-full pt-[0.2rem] pb-6 sm:pb-6 flex flex-col items-center">
-                            
-                            <div class="referral-card">
-                                <div class="floating-gift">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="48" height="48" class="sm:w-[56px] sm:h-[56px]">
-                                        <rect x="12" y="28" width="40" height="30" rx="3" fill="#22c55e" />
-                                        <rect x="28" y="28" width="8" height="30" fill="#facc15" />
-                                        <rect x="8" y="20" width="48" height="12" rx="2" fill="#16a34a" />
-                                        <rect x="28" y="20" width="8" height="12" fill="#eab308" />
-                                        <path d="M32 20C32 20 26 6 16 12C10 16 16 20 16 20H32Z" fill="#facc15" />
-                                        <path d="M32 20C32 20 38 6 48 12C54 16 48 20 48 20H32Z" fill="#facc15" />
-                                        <circle cx="32" cy="20" r="4" fill="#ca8a04" />
-                                    </svg>
-                                </div>
-
-                                <h3 class="text-[22px] sm:text-[1.55rem] font-black text-[#0f1a0d] mb-2 sm:mb-2.5 font-heading-new inline-block relative">
-                                    <span id="highlight-trigger" class="relative inline-block px-2">
-                                        <span class="relative z-10">Unlock Extra <span class="text-[#22c55e]">10% OFF</span></span>
-                                        <svg class="absolute inset-x-0 bottom-[2px] h-[65%] w-[104%] -left-[2%] z-0 pointer-events-none" viewBox="0 0 100 10" preserveAspectRatio="none">
-                                            <path d="M 2,5 Q 50,7 98,4" fill="none" stroke="rgba(253, 224, 71, 0.9)" stroke-width="8" stroke-linecap="round" class="marker-stroke" />
-                                        </svg>
-                                    </span>
-                                </h3>
-                                
-                                <p class="text-gray-600 text-[13px] sm:text-[14px] leading-relaxed mb-4 sm:mb-5 font-medium">
-                                    Share with <span class="text-[#22c55e] font-bold">10 friends & family</span> in Rajapalayam to unlock an exclusive discount.
-                                </p>
-
-                                <button onclick="share()" class="whatsapp-btn">
-                                    <svg class="whatsapp-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-                                        <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
-                                    </svg>
-                                    <span>Share on WhatsApp</span>
-                                </button>
-                            </div>
-
-                            <a href="https://articmarket.com" class="text-slate-600 hover:text-slate-800 hover:underline text-[12px] font-bold transition-all uppercase tracking-[0.06em] flex items-center justify-center gap-1.5 mt-8 sm:mt-5">
-                                Skip to website
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
-                                </svg>
-                            </a>
-                        </div>
+                    
+                    <h1 class="success-heading text-[44px] sm:text-[50px] lg:text-[40px] font-headingNew font-black mb-3 text-brandDark tracking-tight leading-none transform-gpu">
+                        Thank <span class="text-brandGreen">You,</span>
+                    </h1>
+                    
+                    <!-- DYNAMIC NAME INSERTION WITH UPDATED STYLES -->
+                    <p class="success-subtitle text-gray-500 font-bodyNew text-[17px] font-medium mb-6 transform-gpu">
+                         for registering <span class="text-black text-[19px] font-[700]">Mr. <span id="display-name"></span></span>. You've got access to ARTIC Market.
+                    </p>
+                    
+                    <div class="success-location-badge inline-flex items-center gap-2 px-4 py-2 bg-brandLightGray border border-gray-200 rounded-full text-[13px] font-bold font-bodyNew tracking-wide text-gray-700 shadow-sm mb-10 transform-gpu">
+                        📍 Rajapalayam <span class="text-gray-300 font-normal mx-1">|</span> <span class="text-gray-500">Location Soon</span>
                     </div>
-
                 </div>
+
+                <!-- Referral Offer Card -->
+                <div class="referral-wrapper w-full overflow-hidden transform-gpu">
+                    <div class="bg-[#F9FAFB] border border-gray-100 rounded-[28px] p-6 sm:p-8 flex flex-col items-center relative shadow-[0_8px_30px_rgb(0,0,0,0.04)] mb-1.5">
+                        
+                        <div class="floating-gift text-[44px] mb-4 drop-shadow-md leading-none">
+                            🎁
+                        </div>
+                        
+                        <!-- Updated Font Family and Weight -->
+                        <h2 class="font-headingNew font-black text-[28px] sm:text-[30px] text-brandDark mb-3 text-center leading-tight">
+                            Unlock Extra <span class="text-brandGreen relative z-10 inline-block whitespace-nowrap">10% OFF
+                                <svg class="absolute bottom-1 left-0 w-full h-3.5 -z-10 text-brandYellow" preserveAspectRatio="none" viewBox="0 0 100 10" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round">
+                                    <path class="marker-path" pathLength="100" style="stroke-dasharray: 100; stroke-dashoffset: 100; opacity: 0.8;" d="M2 5 Q 50 2 98 8" />
+                                </svg>
+                            </span>
+                        </h2>
+                        
+                        <p class="text-[15px] sm:text-[16px] font-bodyNew text-gray-500 text-center mb-8 max-w-[340px] leading-relaxed">
+                            Share with <span class="font-bold text-brandGreen">10 friends & family</span> in Rajapalayam to unlock an exclusive discount.
+                        </p>
+                        
+                        <!-- Consolidated WhatsApp Button Styles (Identical for Step 3 & 4) -->
+                        <a href="#" class="whatsapp-btn">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51h-.57c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                            Share on WhatsApp
+                        </a>
+                    </div>
+                    
+                    <!-- Updated Step 3 Skip Link -->
+                    <a href="#" class="skip-link flex items-center justify-center gap-1.5 w-max mx-auto text-[14px] font-bold text-slate-500 uppercase tracking-[0.06em] hover:text-slate-800 hover:underline transition-all duration-300 group p-2">
+                        Skip for now 
+                        <svg class="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                    </a>
+                </div>
+
             </div>
 
             <!-- ================= STEP 4: ALREADY REGISTERED PAGE ================= -->
-            <div id="page-already-registered" class="hidden font-body-new w-full h-full grid place-items-center px-4 sm:px-6 md:px-8 relative text-center overflow-hidden">
+            <div id="step4-panel" class="w-full max-w-[520px] h-full mx-auto flex-col justify-center items-center relative pt-[calc(3rem+env(safe-area-inset-top,0px))] lg:pt-4 pb-[env(safe-area-inset-bottom)] my-auto min-h-[70vh] lg:min-h-full">
                 
-                <!-- Days Left Countdown Popup -->
-                <div class="countdown-popup">
-                    <div class="clock-anim">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <path class="clock-hand" d="M12 6v6l3 3"></path>
-                        </svg>
-                    </div>
-                    <span><span class="days-count-val">0</span> Days Left</span>
-                </div>
-
-                <div id="already-registered-card" class="w-full max-w-[500px] p-6 xs:p-7 sm:p-8 md:p-10 flex flex-col items-center text-center relative overflow-hidden" style="opacity: 0; transform: translateY(40px) scale(0.96);">
+                <!-- NEW ICON: User with Tick SVG Icon -->
+                <div class="step4-anim relative mb-5 sm:mb-6">
+                    <!-- Pulsing yellow glow ring behind the icon -->
+                    <div class="absolute inset-0 rounded-full border-[2.5px] border-[#facc15] pulse-ring-yellow"></div>
                     
-                    <div class="relative mb-5 sm:mb-6">
-                        <div class="absolute inset-0 rounded-full border-[2.5px] border-[#facc15] pulse-ring-yellow"></div>
-                        <div class="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-[#facc15] to-[#eab308] rounded-full flex items-center justify-center shadow-[0_10px_25px_rgba(250,204,21,0.35)] relative z-10">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 sm:h-10 sm:w-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="9" cy="7" r="4"></circle>
-                                <polyline points="16 11 18 13 22 9"></polyline>
-                            </svg>
-                        </div>
-                    </div>
-
-                    <h2 class="stagger-el font-headingNew text-[26px] xs:text-[28px] sm:text-[32px] md:text-[36px] font-black text-[#0f1a0d] mb-5 sm:mb-6 leading-tight tracking-tight">
-                        You've already <br/><span class="text-[#eab308]">Registered!</span>
-                    </h2>
-
-                    <div class="stagger-el location-badge mb-7 sm:mb-8">
-                        📍 Rajapalayam — Location Soon
-                    </div>
-
-                    <div class="stagger-el w-full pt-6 border-t border-gray-100 flex flex-col items-center">
+                    <!-- Yellow Gradient Circle Container -->
+                    <div class="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-[#facc15] to-[#eab308] rounded-full flex items-center justify-center shadow-[0_10px_25px_rgba(250,204,21,0.35)] relative z-10">
                         
-                        <h3 class="text-[22px] sm:text-[24px] font-black text-[#0f1a0d] mb-2 sm:mb-3 font-headingNew">
-                            Share with Friends
-                        </h3>
-                        
-                        <p class="text-gray-500 text-[13.5px] sm:text-[14.5px] md:text-[15px] leading-relaxed mb-6 font-medium max-w-[360px]">
-                            Invite <span class="text-[#22c55e] font-bold">10 friends & family</span> in Rajapalayam to unlock an exclusive <span class="text-[#22c55e] font-bold">10% discount!</span>
-                        </p>
+                        <!-- User with Tick SVG Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 sm:h-10 sm:w-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <!-- User Silhouette -->
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <!-- Checkmark Tick next to user -->
+                            <polyline points="16 11 18 13 22 9"></polyline>
+                        </svg>
 
-                        <button onclick="share()" class="whatsapp-btn">
-                            <svg class="whatsapp-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-                                <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
-                            </svg>
-                            <span>Share on WhatsApp</span>
-                        </button>
                     </div>
-
-                    <div class="stagger-el mt-6 sm:mt-7 w-full">
-                        <a href="https://articmarket.com" class="text-slate-500 hover:text-slate-800 hover:underline text-[12.5px] sm:text-[13px] font-bold transition-all uppercase tracking-[0.06em] flex items-center justify-center gap-1.5">
-                            Skip to website
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
-                            </svg>
-                        </a>
-                    </div>
-
                 </div>
+
+                <!-- Main Heading -->
+                <h1 class="step4-anim text-[32px] sm:text-[36px] font-headingNew font-black text-[#0f1a0d] mb-3 text-center leading-tight tracking-tight">
+                    You've already <span class="text-[#eab308]">Registered!</span>
+                </h1>
+
+                <!-- Subtext -->
+                <p class="step4-anim font-bodyNew text-[15px] sm:text-[16px] text-gray-500 text-center mb-6 max-w-[340px] leading-relaxed">
+                    We will notify you the exact location soon
+                </p>
+
+                <!-- Location Badge -->
+                <div class="step4-anim inline-flex items-center gap-2 px-5 py-2.5 bg-[#f8faf8] border border-slate-200 rounded-[40px] text-[13.5px] font-bold font-bodyNew text-slate-700 shadow-sm mb-10">
+                    📍 Rajapalayam <span class="text-slate-300 font-normal mx-1">—</span> <span class="text-slate-500">Location Soon</span>
+                </div>
+
+                <!-- Referral Card -->
+                <div class="step4-anim w-full bg-[#f9fafb] border border-gray-100 rounded-[24px] p-6 sm:p-8 flex flex-col items-center relative shadow-[0_8px_30px_rgb(0,0,0,0.04)] mb-5">
+                    
+                    <h2 class="font-headingNew text-[26px] sm:text-[28px] font-black text-brandDark mb-4 text-center leading-tight">
+                        Share with Friends
+                    </h2>
+                    
+                    <p class="text-[15px] sm:text-[16px] font-bodyNew text-gray-500 text-center mb-8 max-w-[340px] leading-relaxed">
+                        Invite 10 friends & family in Rajapalayam to unlock an exclusive <span class="font-bold text-[#22c55e]">10% discount!</span>
+                    </p>
+                    
+                    <!-- Consolidated WhatsApp Button Styles (Identical for Step 3 & 4) -->
+                    <a href="#" class="whatsapp-btn">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51h-.57c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                        Share on WhatsApp
+                    </a>
+                </div>
+                
+                <a href="#" class="step4-anim flex items-center justify-center gap-1.5 w-max mx-auto text-[12px] font-bold text-slate-500 uppercase tracking-[0.06em] hover:text-slate-800 hover:underline transition-all duration-300 p-2">
+                    Skip to website 
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                </a>
             </div>
 
         </section>
 
     </main>
 
-    <!-- Script Logic -->
+    <!-- Interactions & Animations -->
     <script>
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-        // WhatsApp Share Logic
-        function share() {
-            const text = "Hey! 🥦 I just got VIP wholesale access to farm-fresh veggies at ARTIC MARKET in Rajapalayam. \n\nRegister using my link and we BOTH get an extra 10% OFF! 🎉🍅 \n\nGet it here: [Insert Link]";
-            const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
-            window.open(url, '_blank');
-        }
-
-        // Days Left Countdown Calculation Logic
-        function initCountdown() {
-            const openingDateStr = '02.08.2026';
-            
-            const parts = openingDateStr.split('.');
-            if (parts.length === 3) {
-                const targetDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}T00:00:00`);
-                const now = new Date();
-                const diffTime = targetDate - now;
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                
-                const badges = document.querySelectorAll('.days-count-val');
-                const popupContainers = document.querySelectorAll('.countdown-popup');
-                
-                if (diffDays > 0) {
-                    badges.forEach(b => b.innerText = diffDays);
-                } else {
-                    popupContainers.forEach(p => p.style.display = 'none');
-                }
-            }
-        }
-
-        // Cover Page (Step 1) Initial Setup or Already Registered Setup
+        // Cover Page (Step 1) Initial Setup
         window.addEventListener('DOMContentLoaded', () => {
-            initCountdown();
-
-            if (isAlreadyRegistered) {
-                // Initialize Already Registered Page Entry
-                document.body.classList.add('step-2-active');
-                document.getElementById('step1-panel').classList.replace('flex', 'hidden');
-                document.getElementById('step2-panel').classList.replace('flex', 'hidden');
-                document.getElementById('page-ending').classList.replace('flex', 'hidden');
-                document.getElementById('page-already-registered').classList.replace('hidden', 'grid');
-                
-                const tl = gsap.timeline({ delay: 0.2 });
-                tl.to("#already-registered-card", { opacity: 1, y: 0, scale: 1, duration: 1.0, ease: "back.out(1.2)" })
-                  .to("#page-already-registered .stagger-el", { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: "power2.out" }, "-=0.4")
-                  .to("#page-already-registered .countdown-popup", { opacity: 1, scale: 1, y: 0, duration: 0.6, ease: "back.out(1.6)" }, "+=0.2");
+            // If already registered, skip the intro animations completely
+            // as CSS handles displaying Step 4 instantly with its own animation.
+            if (document.documentElement.classList.contains('is-already-registered')) {
                 return;
             }
 
@@ -818,7 +795,7 @@
         // Flow Functions
         function showForm() {
             if (prefersReducedMotion) {
-                togglePanels(true);
+                togglePanels(1, 2);
                 return;
             }
 
@@ -828,7 +805,7 @@
             // Fade out Step 1
             tl.to('.intro-stagger', { opacity: 0, y: -10, duration: 0.3, stagger: 0.05, ease: 'power2.in' })
               .to('#step1-panel', { opacity: 0, duration: 0.2 }, "-=0.2")
-              .call(() => togglePanels(true));
+              .call(() => togglePanels(1, 2));
               
             if (isMobile) {
                 tl.fromTo('#step2-panel', { opacity: 0 }, { opacity: 1, duration: 0.3 }, "+=0.35")
@@ -841,7 +818,7 @@
 
         function showCover() {
             if (prefersReducedMotion) {
-                togglePanels(false);
+                togglePanels(2, 1);
                 return;
             }
 
@@ -851,7 +828,7 @@
             // Fade out Step 2
             tl.to('.form-stagger', { opacity: 0, y: 10, duration: 0.3, stagger: 0.05, ease: 'power2.in' })
               .to('#step2-panel', { opacity: 0, duration: 0.2 }, "-=0.2")
-              .call(() => togglePanels(false));
+              .call(() => togglePanels(2, 1));
               
             if (isMobile) {
                 tl.fromTo('#step1-panel', { opacity: 0 }, { opacity: 1, duration: 0.3 }, "+=0.35")
@@ -862,78 +839,38 @@
             }
         }
 
-        function togglePanels(toForm) {
+        // Helper to instantly swap visibility classes for the structural flow
+        function togglePanels(fromStep, toStep) {
             const step1 = document.getElementById('step1-panel');
             const step2 = document.getElementById('step2-panel');
+            const step3 = document.getElementById('step3-panel');
 
-            if (toForm) {
-                step1.classList.replace('flex', 'hidden');
+            // Hide everything
+            [step1, step2, step3].forEach(el => el.classList.replace('flex', 'hidden'));
+
+            if (toStep === 1) {
+                step1.classList.replace('hidden', 'flex');
+                document.body.classList.remove('step-2-active', 'step-3-active');
+            } else if (toStep === 2) {
                 step2.classList.replace('hidden', 'flex');
                 document.body.classList.add('step-2-active');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else {
-                step2.classList.replace('flex', 'hidden');
-                step1.classList.replace('hidden', 'flex');
-                document.body.classList.remove('step-2-active');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else if (toStep === 3) {
+                step3.classList.replace('hidden', 'flex');
+                document.body.classList.add('step-2-active', 'step-3-active');
             }
-        }
-
-        function showSuccessPage() {
-            const step2 = document.getElementById('step2-panel');
-            const pageEnding = document.getElementById('page-ending');
-
-            // Hide Form and Show Success Panel
-            step2.classList.replace('flex', 'hidden');
-            pageEnding.classList.replace('hidden', 'flex');
-            document.body.classList.add('step-2-active');
-            window.scrollTo({ top: 0, behavior: 'instant' });
-
-            // Pre-render states for the Success sequence (matching reference code EXACTLY)
-            gsap.set(["#checkmark-circle", ".pulse-ring-form"], { scale: 0 });
-            gsap.set("#page-ending-card", { opacity: 0, y: 30 });
-            gsap.set("#success-wrapper", { height: 0, opacity: 0 });
-            gsap.set("#success-inner", { y: 40 });
-            gsap.set("#checkmark-tick", { strokeDasharray: 24, strokeDashoffset: 24 });
-            gsap.set(".success-stagger", { opacity: 0, y: 15 });
-            gsap.set("#reward-wrapper", { height: 0, opacity: 0 });
-            gsap.set("#reward-inner", { y: -50 });
-            document.getElementById('highlight-trigger').classList.remove('active');
-
-            // Play Success Page Animations Timeline (exact durations & easings from reference code)
-            const tl = gsap.timeline({ delay: 0.2 });
-
-            tl.to("#page-ending-card", { opacity: 1, y: 0, duration: 1.5, ease: "power4.out" })
-              .to("#success-wrapper", { height: "auto", opacity: 1, duration: 1.0, ease: "power4.inOut" }, "<")
-              .to("#success-inner", { y: 0, duration: 1.0, ease: "power4.out" }, "<0.1") 
-              
-              .to(["#checkmark-circle", ".pulse-ring-form"], { scale: 1, duration: 0.5, ease: "back.out(1.6)" }, "-=0.3")
-              .to("#checkmark-tick", { strokeDashoffset: 0, duration: 0.35, ease: "power2.out" }, "<0.1")
-              .to(".success-stagger", { opacity: 1, y: 0, duration: 0.45, stagger: 0.1, ease: "power2.out" }, "-=0.1")
-              .add(() => {
-                  // Dynamically calculate the center of the right screen panel for confetti burst
-                  const cardRect = document.getElementById('page-ending-card').getBoundingClientRect();
-                  const originX = (cardRect.left + (cardRect.width / 2)) / window.innerWidth;
-                  
-                  confetti({ particleCount: 130, spread: 80, origin: { y: 0.62, x: originX }, colors: ['#ef4444', '#3b82f6', '#facc15', '#22c55e', '#a855f7', '#ec4899'] });
-              }, "-=0.2")
-              
-              .to({}, { duration: 1.0 }) 
-              .addLabel("showReward")
-              
-              .to("#reward-wrapper", { height: "auto", duration: 1.4, ease: "power4.inOut" }, "showReward")
-              .to("#reward-inner", { y: 0, duration: 1.4, ease: "power4.inOut" }, "showReward")
-              .to("#reward-wrapper", { opacity: 1, duration: 1.0, ease: "power2.out" }, "showReward+=0.4")
-              
-              .add(() => {
-                  document.getElementById('highlight-trigger').classList.add('active');
-              }, "showReward+=1.2")
-              .to("#page-ending .countdown-popup", { opacity: 1, scale: 1, y: 0, duration: 0.6, ease: "back.out(1.6)" }, "showReward+=1.5");
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         // Submitting Animation Logic
         document.querySelector('form').addEventListener('submit', function(e) {
             e.preventDefault();
+
+            // Set dynamic user name to display on the Thank You page
+            const userName = document.getElementById('name').value;
+            const displayNameElem = document.getElementById('display-name');
+            if (displayNameElem) {
+                displayNameElem.textContent = userName;
+            }
 
             const btn = document.getElementById('submitBtn');
             const btnText = document.getElementById('btnText');
@@ -945,14 +882,98 @@
             btnSpinner.classList.remove('hidden');
             btn.style.pointerEvents = 'none';
 
-            // Mark as registered in LocalStorage
-            localStorage.setItem('artic_registered', 'true');
-
-            // Delay submission visually then display Thank You Page
+            // Simulate slight delay to let the animation play out visually before firing the success transition
             setTimeout(() => {
+                // IMPORTANT: Set the local storage flag so the user is marked as already registered on reload
+                localStorage.setItem('artic_registered', 'true');
+                
                 showSuccessPage();
             }, 1200);
         });
+
+        // The Success Page Cinematic Animation Sequence
+        function showSuccessPage() {
+            if (prefersReducedMotion) {
+                togglePanels(2, 3);
+                gsap.set('.checkmark-path', { strokeDashoffset: 0 });
+                triggerConfetti();
+                return;
+            }
+
+            const tl = gsap.timeline();
+
+            // Fade out Step 2 form gently
+            tl.to('.form-stagger', { opacity: 0, y: -10, duration: 0.3, stagger: 0.05, ease: 'power2.in' })
+              .to('#step2-panel', { opacity: 0, duration: 0.2 }, "-=0.2")
+              .call(() => {
+                  togglePanels(2, 3);
+              });
+
+            // Step 1: Entire success container fades upward
+            tl.fromTo('#step3-panel',
+                { opacity: 0, y: 30 },
+                { opacity: 1, y: 0, duration: 1.2, ease: 'power4.out', clearProps: 'transform' },
+                "+=0.1"
+            );
+
+            // Step 3: Success Icon Background & Pulse Ring Pop In
+            tl.fromTo(['.success-icon-circle', '.pulse-ring-form'],
+                { scale: 0 },
+                { scale: 1, duration: 0.6, ease: 'back.out(1.6)', clearProps: 'transform' },
+                "-=0.9"
+            );
+
+            // Tick drawing animation + trigger confetti right after
+            tl.to('.checkmark-path', 
+                { strokeDashoffset: 0, duration: 0.35, ease: 'power2.out' },
+                "-=0.3"
+            ).call(triggerConfetti);
+
+            // Step 4: Stagger reveal text elements
+            tl.fromTo(['.success-heading', '.success-subtitle', '.success-location-badge'],
+                { opacity: 0, y: 15 },
+                { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: 'power4.out', clearProps: 'transform' },
+                "-=0.15"
+            );
+
+            // Step 6: Reveal Referral Section (Expands downward smoothly)
+            tl.fromTo('.referral-wrapper',
+                { opacity: 0, y: 20, height: 0 },
+                { opacity: 1, y: 0, height: 'auto', duration: 0.8, ease: 'power4.inOut', clearProps: 'transform, height' },
+                "-=0.3"
+            );
+
+            // Highlight Marker draws left to right
+            tl.to('.marker-path',
+                { strokeDashoffset: 0, duration: 0.8, ease: 'power2.out' },
+                "-=0.2"
+            );
+
+            // Step 7: Countdown badge scales in last
+            tl.fromTo('.countdown-badge',
+                { opacity: 0, scale: 0.5 },
+                { opacity: 1, scale: 1, duration: 0.6, ease: 'back.out(1.6)', clearProps: 'transform' },
+                "-=0.2"
+            );
+        }
+
+        // Premium Confetti Burst
+        function triggerConfetti() {
+            if (typeof confetti === 'function') {
+                const isDesktop = window.innerWidth >= 1024;
+                confetti({
+                    particleCount: 80,
+                    spread: 60,
+                    origin: { 
+                        x: isDesktop ? 0.74 : 0.5, 
+                        y: isDesktop ? 0.55 : 0.55 
+                    },
+                    colors: ['#22C55E', '#FACC15', '#3B82F6', '#A855F7', '#EC4899', '#EF4444'],
+                    disableForReducedMotion: true,
+                    zIndex: 100
+                });
+            }
+        }
     </script>
 </body>
 </html>
