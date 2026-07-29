@@ -266,7 +266,7 @@
             box-shadow: 0 4px 14px rgba(250, 204, 21, 0.4);
             font-family: 'Plus Jakarta Sans', sans-serif;
             font-weight: 800;
-            font-size: 13px; /* UPDATED: 13px for mobile & tablet screens */
+            font-size: 13px; /* Mobile & Tablet Font Size */
             color: #0f1a0d;
         }
 
@@ -274,7 +274,7 @@
         @media (min-width: 1024px) {
             .countdown-popup {
                 padding: 9px 15px;
-                font-size: 14px;
+                font-size: 14px; /* Desktop Font Size */
             }
         }
 
@@ -626,17 +626,18 @@
                         </div>
                     </div>
                     
-                    <!-- UPDATED: text-[38px] for mobile, sm:text-[50px] for tablet, lg:text-[40px] for desktop -->
-                    <h1 class="success-heading text-[38px] sm:text-[50px] lg:text-[40px] font-headingNew font-black mb-3 text-brandDark tracking-tight leading-none transform-gpu">
+                    <!-- Modified Mobile Font Size to 34px, preserved sm/lg -->
+                    <h1 class="success-heading text-[34px] sm:text-[50px] lg:text-[40px] font-headingNew font-black mb-3 text-brandDark tracking-tight leading-none transform-gpu">
                         Thank <span class="text-brandGreen">You,</span>
                     </h1>
                     
-                    <!-- UPDATED: text-[16px] for mobile, sm:text-[17px] for tablet & desktop -->
-                    <p class="success-subtitle text-gray-500 font-bodyNew text-[16px] sm:text-[17px] font-medium mb-6 transform-gpu">
-                         for registering <span class="text-black text-[19px] font-[700]">Mr. <span id="display-name"></span></span>. You've got access to ARTIC Market.
+                    <!-- DYNAMIC NAME INSERTION WITH UPDATED STYLES (Modified mobile to 15px & 18px respectively, preserved sm) -->
+                    <p class="success-subtitle text-gray-500 font-bodyNew text-[15px] sm:text-[17px] font-medium mb-6 transform-gpu">
+                         for registering <span class="text-black text-[18px] sm:text-[19px] font-[700]">Mr. <span id="display-name"></span></span>. You've got access to ARTIC Market.
                     </p>
                     
-                    <div class="success-location-badge inline-flex items-center gap-2 px-4 py-2 bg-brandLightGray border border-gray-200 rounded-full text-[13px] font-bold font-bodyNew tracking-wide text-gray-700 shadow-sm mb-10 transform-gpu">
+                    <!-- Modified Mobile Font Size to 14px, preserved sm to previous default (13px) -->
+                    <div class="success-location-badge inline-flex items-center gap-2 px-4 py-2 bg-brandLightGray border border-gray-200 rounded-full text-[14px] sm:text-[13px] font-bold font-bodyNew tracking-wide text-gray-700 shadow-sm mb-10 transform-gpu">
                         📍 Rajapalayam <span class="text-gray-300 font-normal mx-1">|</span> <span class="text-gray-500">Location Soon</span>
                     </div>
                 </div>
@@ -649,8 +650,8 @@
                             🎁
                         </div>
                         
-                        <!-- UPDATED: text-[27px] for mobile, sm:text-[30px] for tablet & desktop -->
-                        <h2 class="font-headingNew font-black text-[27px] sm:text-[30px] text-brandDark mb-3 text-center leading-tight">
+                        <!-- Modified Mobile Font Size to 26px, preserved sm -->
+                        <h2 class="font-headingNew font-black text-[26px] sm:text-[30px] text-brandDark mb-3 text-center leading-tight">
                             Unlock Extra <span class="text-brandGreen relative z-10 inline-block whitespace-nowrap">10% OFF
                                 <svg class="absolute bottom-1 left-0 w-full h-3.5 -z-10 text-brandYellow" preserveAspectRatio="none" viewBox="0 0 100 10" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round">
                                     <path class="marker-path" pathLength="100" style="stroke-dasharray: 100; stroke-dashoffset: 100; opacity: 0.8;" d="M2 5 Q 50 2 98 8" />
@@ -669,7 +670,7 @@
                         </a>
                     </div>
                     
-                    <!-- UPDATED: text-[13px] for mobile, sm:text-[14px] for tablet & desktop -->
+                    <!-- Modified Mobile Font Size to 13px, preserved sm to previous default (14px) -->
                     <a href="#" class="skip-link flex items-center justify-center gap-1.5 w-max mx-auto text-[13px] sm:text-[14px] font-bold text-slate-500 uppercase tracking-[0.06em] hover:text-slate-800 hover:underline transition-all duration-300 group p-2">
                         Skip to website
                         <svg class="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
