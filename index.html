@@ -613,14 +613,14 @@
                 <div class="w-full flex flex-col items-center text-center">
                     
                     <!-- NEW TICK UI WITH PULSING RING -->
-                    <div class="success-icon-wrapper relative w-20 h-20 mb-7 transform-gpu">
+                    <div class="success-icon-wrapper relative w-[4.5rem] h-[4.5rem] sm:w-20 sm:h-20 mb-7 transform-gpu">
                         <!-- Pulsing Ring -->
                         <div class="pulse-ring-form absolute inset-0 rounded-full border-[2.5px] border-[#22c55e]"></div>
                         
                         <!-- Green Circle Background -->
                         <div class="success-icon-circle absolute inset-0 bg-gradient-to-br from-[#22c55e] to-[#16a34a] rounded-full flex items-center justify-center shadow-[0_10px_25px_rgba(34,197,94,0.35)] z-10">
                             <!-- SVG Tick (Drawn by GSAP) -->
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-[2.1rem] h-[2.1rem] sm:w-10 sm:h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path class="checkmark-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" style="stroke-dasharray: 24; stroke-dashoffset: 24;" />
                             </svg>
                         </div>
@@ -642,47 +642,49 @@
                     </div>
                 </div>
 
-                <!-- Referral Offer Card -->
-                <div class="referral-wrapper w-full overflow-hidden transform-gpu">
-                    <div class="bg-[#F9FAFB] border border-gray-100 rounded-[28px] p-6 sm:p-8 flex flex-col items-center relative shadow-[0_8px_30px_rgb(0,0,0,0.04)] mb-1.5">
-                        
-                        <div class="floating-gift mb-4 drop-shadow-md leading-none">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="48" height="48" class="sm:w-[56px] sm:h-[56px]">
-                                <rect x="12" y="28" width="40" height="30" rx="3" fill="#ef4444" />
-                                <rect x="28" y="28" width="8" height="30" fill="#facc15" />
-                                <rect x="8" y="20" width="48" height="12" rx="2" fill="#dc2626" />
-                                <rect x="28" y="20" width="8" height="12" fill="#eab308" />
-                                <path d="M32 20C32 20 26 6 16 12C10 16 16 20 16 20H32Z" fill="#facc15" />
-                                <path d="M32 20C32 20 38 6 48 12C54 16 48 20 48 20H32Z" fill="#facc15" />
-                                <circle cx="32" cy="20" r="4" fill="#ca8a04" />
-                            </svg>
+                <!-- Referral Offer Card - Structure modified for GSAP Parallax Animation -->
+                <div id="reward-wrapper" class="referral-wrapper w-full overflow-hidden transform-gpu">
+                    <div id="reward-inner" class="w-full">
+                        <div class="bg-[#F9FAFB] border border-gray-100 rounded-[28px] p-6 sm:p-8 flex flex-col items-center relative shadow-[0_8px_30px_rgb(0,0,0,0.04)] mb-1.5 w-full">
+                            
+                            <div class="floating-gift mb-4 drop-shadow-md leading-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="60" height="60" class="sm:w-[56px] sm:h-[56px]">
+                                    <rect x="12" y="28" width="40" height="30" rx="3" fill="#ef4444" />
+                                    <rect x="28" y="28" width="8" height="30" fill="#facc15" />
+                                    <rect x="8" y="20" width="48" height="12" rx="2" fill="#dc2626" />
+                                    <rect x="28" y="20" width="8" height="12" fill="#eab308" />
+                                    <path d="M32 20C32 20 26 6 16 12C10 16 16 20 16 20H32Z" fill="#facc15" />
+                                    <path d="M32 20C32 20 38 6 48 12C54 16 48 20 48 20H32Z" fill="#facc15" />
+                                    <circle cx="32" cy="20" r="4" fill="#ca8a04" />
+                                </svg>
+                            </div>
+                            
+                            <!-- Modified Mobile Font Size to 26px, preserved sm -->
+                            <h2 class="font-headingNew font-black text-[26px] sm:text-[30px] text-brandDark mb-3 text-center leading-tight">
+                                Unlock Extra <span class="text-brandGreen relative z-10 inline-block whitespace-nowrap">10% OFF
+                                    <svg class="absolute bottom-1 left-0 w-full h-3.5 -z-10 text-brandYellow" preserveAspectRatio="none" viewBox="0 0 100 10" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round">
+                                        <path class="marker-path" pathLength="100" style="stroke-dasharray: 100; stroke-dashoffset: 100; opacity: 0.8;" d="M2 5 Q 50 2 98 8" />
+                                    </svg>
+                                </span>
+                            </h2>
+                            
+                            <p class="text-[15px] sm:text-[16px] font-bodyNew text-gray-500 text-center mb-8 max-w-[340px] leading-relaxed">
+                                Share with <span class="font-bold text-brandGreen">10 friends & family</span> in Rajapalayam to unlock an exclusive discount.
+                            </p>
+                            
+                            <!-- Consolidated WhatsApp Button Styles (Identical for Step 3 & 4) -->
+                            <a href="#" class="whatsapp-btn">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51h-.57c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                                Share on WhatsApp
+                            </a>
                         </div>
                         
-                        <!-- Modified Mobile Font Size to 26px, preserved sm -->
-                        <h2 class="font-headingNew font-black text-[26px] sm:text-[30px] text-brandDark mb-3 text-center leading-tight">
-                            Unlock Extra <span class="text-brandGreen relative z-10 inline-block whitespace-nowrap">10% OFF
-                                <svg class="absolute bottom-1 left-0 w-full h-3.5 -z-10 text-brandYellow" preserveAspectRatio="none" viewBox="0 0 100 10" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round">
-                                    <path class="marker-path" pathLength="100" style="stroke-dasharray: 100; stroke-dashoffset: 100; opacity: 0.8;" d="M2 5 Q 50 2 98 8" />
-                                </svg>
-                            </span>
-                        </h2>
-                        
-                        <p class="text-[15px] sm:text-[16px] font-bodyNew text-gray-500 text-center mb-8 max-w-[340px] leading-relaxed">
-                            Share with <span class="font-bold text-brandGreen">10 friends & family</span> in Rajapalayam to unlock an exclusive discount.
-                        </p>
-                        
-                        <!-- Consolidated WhatsApp Button Styles (Identical for Step 3 & 4) -->
-                        <a href="#" class="whatsapp-btn">
-                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51h-.57c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                            Share on WhatsApp
+                        <!-- Modified Mobile Font Size to 13px, preserved sm to previous default (14px) -->
+                        <a href="#" class="skip-link flex items-center justify-center gap-1.5 w-max mx-auto text-[13px] sm:text-[14px] font-bold text-slate-500 uppercase tracking-[0.06em] hover:text-slate-800 hover:underline transition-all duration-300 group p-2">
+                            Skip to website
+                            <svg class="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
                         </a>
                     </div>
-                    
-                    <!-- Modified Mobile Font Size to 13px, preserved sm to previous default (14px) -->
-                    <a href="#" class="skip-link flex items-center justify-center gap-1.5 w-max mx-auto text-[13px] sm:text-[14px] font-bold text-slate-500 uppercase tracking-[0.06em] hover:text-slate-800 hover:underline transition-all duration-300 group p-2">
-                        Skip to website
-                        <svg class="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
-                    </a>
                 </div>
 
             </div>
@@ -906,11 +908,17 @@
             if (prefersReducedMotion) {
                 togglePanels(2, 3);
                 gsap.set('.checkmark-path', { strokeDashoffset: 0 });
+                gsap.set('#reward-wrapper', { height: 'auto', opacity: 1 });
+                gsap.set('#reward-inner', { y: 0 });
                 triggerConfetti();
                 return;
             }
 
             const tl = gsap.timeline();
+
+            // Setup for the dynamic Parallax Reveal
+            gsap.set('#reward-wrapper', { height: 0, opacity: 0 });
+            gsap.set('#reward-inner', { y: -40 }); // Parallax start position
 
             // Fade out Step 2 form gently
             tl.to('.form-stagger', { opacity: 0, y: -10, duration: 0.3, stagger: 0.05, ease: 'power2.in' })
@@ -946,24 +954,30 @@
                 "-=0.15"
             );
 
-            // Step 6: Reveal Referral Section (Expands downward smoothly)
-            tl.fromTo('.referral-wrapper',
-                { opacity: 0, y: 20, height: 0 },
-                { opacity: 1, y: 0, height: 'auto', duration: 0.8, ease: 'power4.inOut', clearProps: 'transform, height' },
-                "-=0.3"
-            );
+            // ==========================================
+            // Step 5: Expand & Reveal Reward Card
+            // ==========================================
+            tl.to({}, { duration: 1.0 })
+              .addLabel("showReward");
+
+            // Expand the wrapper (this naturally pushes the top content upward smoothly via flexbox)
+            tl.to("#reward-wrapper", { height: "auto", duration: 1.4, ease: "power4.inOut" }, "showReward")
+              // The inner card slides down into place (Parallax effect)
+              .to("#reward-inner", { y: 0, duration: 1.4, ease: "power4.inOut", clearProps: 'transform' }, "showReward")
+              // Fade the wrapper in
+              .to("#reward-wrapper", { opacity: 1, duration: 1.0, ease: "power2.out" }, "showReward+=0.4");
 
             // Highlight Marker draws left to right
             tl.to('.marker-path',
                 { strokeDashoffset: 0, duration: 0.8, ease: 'power2.out' },
-                "-=0.2"
+                "showReward+=0.6"
             );
 
             // Step 7: Countdown badge scales in last
             tl.fromTo('.countdown-badge',
                 { opacity: 0, scale: 0.5 },
                 { opacity: 1, scale: 1, duration: 0.6, ease: 'back.out(1.6)', clearProps: 'transform' },
-                "-=0.2"
+                "showReward+=0.8"
             );
         }
 
