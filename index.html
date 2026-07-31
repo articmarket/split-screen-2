@@ -143,19 +143,14 @@
             padding: 0.65rem 0.65rem 0.65rem 2.25rem; border-radius: 9999px;
             font-size: 0.95rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
             border: none; cursor: pointer; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.3s ease;
         }
         .btn-cover:hover { 
-            transform: scale(1.04); 
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25), 0 0 0 6px rgba(0, 0, 0, 0.05) !important; 
+            background-color: #1f1f1f;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2); 
         }
-        .btn-cover:active { transform: scale(0.98); }
-        .btn-cover::before {
-            content: ''; position: absolute; top: 0; left: -150%; width: 150%; height: 100%;
-            background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.15) 50%, transparent 100%);
-            transform: skewX(-20deg); transition: left 0.7s cubic-bezier(0.16, 1, 0.3, 1); z-index: 0;
-        }
-        .btn-cover:hover::before { left: 150%; }
+        .btn-cover:active { transform: translateY(1px); }
         
         .arrow-cover {
             position: relative; z-index: 1; display: flex; align-items: center; justify-content: center;
