@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ARTIC Market | Wholesale Registration</title>
     
     <!-- Fonts -->
@@ -59,33 +59,38 @@
             -moz-osx-font-smoothing: grayscale;
             -webkit-tap-highlight-color: transparent;
         }
-        
-        @media (max-width: 1023px) {
-            html { font-size-adjust: 0.52; }
-        }
 
         /* Organic Curve Shadow Split */
         .split-curve {
             box-shadow: 0 -20px 40px rgba(0,0,0,0.06);
             transition: all 0.4s ease-in-out;
         }
+
+        /* Animations Default */
+        .intro-stagger, .form-stagger { opacity: 0; will-change: transform, opacity; }
+
+        /* =========================================
+           CONSOLIDATED DESKTOP STYLES (>= 1024px)
+           ========================================= */
         @media (min-width: 1024px) {
             .split-curve {
                 box-shadow: -20px 0 50px rgba(0,0,0,0.08);
             }
-        }
-
-        /* Mobile specific adjustments for standard state */
-        @media (max-width: 1023px) {
-            .content-container {
-                padding-bottom: env(safe-area-inset-bottom, 20px);
+            .countdown-popup {
+                padding: 9px 14px;
+                font-size: 14px; /* Desktop Font Size */
             }
         }
 
         /* =========================================
-           Dynamic Mobile Transitions (Step 2 Active)
+           CONSOLIDATED MOBILE STYLES (< 1024px)
            ========================================= */
         @media (max-width: 1023px) {
+            
+            .content-container {
+                padding-bottom: env(safe-area-inset-bottom, 20px);
+            }
+
             #right-content {
                 /* Use transform for performant sliding that ignores keyboard reflows */
                 transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1),
@@ -117,10 +122,17 @@
                 display: flex;
                 align-items: center;
             }
-        }
 
-        /* Animations Default */
-        .intro-stagger, .form-stagger { opacity: 0; will-change: transform, opacity; }
+            /* Adjustments specific to Already Registered State (Flexbox Split for responsiveness) */
+            .is-already-registered #left-visual {
+                min-height: 30dvh !important;
+                height: auto !important;
+            }
+            .is-already-registered #right-content {
+                flex-grow: 1 !important;
+                min-height: 70dvh !important;
+            }
+        }
 
         /* =========================================
            Cover CTA Button (Step 1)
@@ -272,14 +284,6 @@
             color: #0f1a0d;
         }
 
-        /* Desktop Only Badge Changes */
-        @media (min-width: 1024px) {
-            .countdown-popup {
-                padding: 9px 14px;
-                font-size: 14px; /* Desktop Font Size */
-            }
-        }
-
         .clock-anim svg { color: #0f1a0d; }
         .clock-hand {
             transform-origin: 12px 12px;
@@ -339,18 +343,6 @@
         /* =========================================
            Already Registered Page Styles
            ========================================= */
-
-        /* Mobile Adjustments specific to Already Registered State (Flexbox Split for responsiveness) */
-        @media (max-width: 1023px) {
-            .is-already-registered #left-visual {
-                min-height: 30dvh !important;
-                height: auto !important;
-            }
-            .is-already-registered #right-content {
-                flex-grow: 1 !important;
-                min-height: 70dvh !important;
-            }
-        }
 
         /* Panel Visibility Controller */
         .is-already-registered #step1-panel, 
@@ -436,10 +428,10 @@
                 </div>
 
                 <div class="intro-stagger">
-                    <h1 class="font-headingNew text-[38px] sm:text-[44px] md:text-[53px] font-black leading-[1.05] mb-4 text-gray-900 tracking-tight">
+                    <h1 class="font-headingNew text-[36px] sm:text-[42px] md:text-[48px] lg:text-[52px] font-black leading-[1.05] mb-4 text-gray-900 tracking-tight">
                         Wholesale <br/><span class="text-[#22c55e]">Registration</span>
                     </h1>
-                    <p class="font-bodyNew text-[17px] sm:text-[16px] md:text-[18px] text-gray-500 mb-8 leading-relaxed max-w-[420px] md:max-w-[36rem]">
+                    <p class="font-bodyNew text-[16px] sm:text-[17px] md:text-[18px] text-gray-500 mb-8 leading-relaxed max-w-[420px] md:max-w-[36rem]">
                         Complete this short form to secure your lifetime wholesale access code for farm-fresh vegetables.
                     </p>
                 </div>
@@ -473,7 +465,7 @@
 
                 <div class="intro-stagger fixed bottom-0 left-0 w-full p-4 bg-white/90 backdrop-blur-xl border-t border-gray-100 z-50 
                             lg:relative lg:p-0 lg:bg-transparent lg:backdrop-blur-none lg:border-none lg:pb-0 lg:mt-8">
-                    <button type="button" onclick="showForm()" class="btn-cover w-[calc(100%+3px)] -translate-x-[1.5px] lg:translate-x-0 lg:w-auto lg:min-w-[230px] flex justify-between items-center !py-2.5 !pl-8 !pr-2.5 mx-auto lg:mx-0">
+                    <button type="button" id="btn-show-form" class="btn-cover w-[calc(100%+3px)] -translate-x-[1.5px] lg:translate-x-0 lg:w-auto lg:min-w-[230px] flex justify-between items-center !py-2.5 !pl-8 !pr-2.5 mx-auto lg:mx-0">
                         <span class="btn-text w-full text-center pl-[38px] lg:pl-[20px] text-white">Register now</span>
                         <span class="arrow-cover !w-[38px] !h-[38px] shrink-0">
                             <span class="arrow-1-cover">
@@ -490,7 +482,7 @@
             <div id="step2-panel" class="hidden w-full max-w-[480px] mx-auto flex-col relative pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] lg:pt-0 lg:pb-0">
                 
                 <div class="form-stagger mb-8 mt-2 lg:mt-0">
-                    <button type="button" class="back-btn" onclick="showCover()">
+                    <button type="button" id="btn-back-cover" class="back-btn">
                         <div class="icon-circle">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M19 12H5"></path>
@@ -518,7 +510,7 @@
                             <span class="field-icon mr-3 pr-3 border-r border-gray-300 flex-shrink-0">
                                 <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                             </span>
-                            <input type="text" id="name" name="name" required placeholder="Your Name" class="custom-input" oninput="this.value = this.value.replace(/\b\w/g, l => l.toUpperCase())">
+                            <input type="text" id="name" name="name" required placeholder="Your Name" autocomplete="name" class="custom-input capitalize">
                         </div>
                     </div>
 
@@ -529,8 +521,7 @@
                                 🇮🇳 +91
                             </span>
                             <input type="tel" id="phone" name="phone" required placeholder="Your number" 
-                                pattern="[0-9]{10}" maxlength="10"
-                                oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10); document.getElementById('phone-check').classList.toggle('visible', this.value.length === 10);"
+                                pattern="[6-9][0-9]{9}" maxlength="10" inputmode="numeric" autocomplete="tel" 
                                 class="custom-input pl-[85px] pr-10 py-3.5">
                             
                             <div id="phone-check" class="field-check">
@@ -547,7 +538,7 @@
                             <span class="field-icon mr-3 pr-3 border-r border-gray-300 flex-shrink-0">
                                 <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                             </span>
-                            <input type="text" id="location" name="location" required placeholder="e.g. Rajapalayam" class="custom-input" oninput="this.value = this.value.replace(/\b\w/g, l => l.toUpperCase())">
+                            <input type="text" id="location" name="location" required placeholder="e.g. Rajapalayam" autocomplete="address-level2" class="custom-input capitalize">
                         </div>
                     </div>
 
@@ -583,49 +574,33 @@
             <!-- ================= STEP 3: SUCCESS PAGE ================= -->
             <div id="step3-panel" class="hidden w-full max-w-[520px] h-full mx-auto flex-col justify-center items-center relative pt-[calc(3rem+env(safe-area-inset-top,0px))] lg:pt-4 pb-[env(safe-area-inset-bottom)] my-auto min-h-[70dvh] lg:min-h-full">
                 
-                <!-- NEW Days Left Countdown UI (Functionality & Position Preserved) -->
-                <!-- Adjusted mobile positioning: -top-[0.1rem] -left-[0.5rem] while keeping desktop lg:-top-2 lg:-left-4 -->
-                <div class="countdown-badge countdown-popup absolute -top-[0.1rem] -left-[0.5rem] lg:-top-2 lg:-left-4 z-50 opacity-0 transform-gpu" id="countdown-badge">
-                    <div class="clock-anim">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <path class="clock-hand" d="M12 6v6l3 3"></path>
-                        </svg>
-                    </div>
-                    <span><span class="days-count-val">0</span> Days Left</span>
-                </div>
+                <!-- NEW Days Left Countdown UI (Injected via JS) -->
+                <div class="countdown-badge countdown-popup absolute -top-[0.1rem] -left-[0.5rem] lg:-top-2 lg:-left-4 z-50 opacity-0 transform-gpu inject-countdown" id="countdown-badge"></div>
 
                 <!-- Success Intro -->
                 <div class="w-full flex flex-col items-center text-center">
                     
-                    <!-- TICK UI (PULSE RING REMOVED) -->
                     <div class="success-icon-wrapper relative w-[4.5rem] h-[4.5rem] sm:w-20 sm:h-20 mb-7 transform-gpu">
-                        <!-- Green Circle Background -->
                         <div class="success-icon-circle absolute inset-0 bg-gradient-to-br from-[#22c55e] to-[#16a34a] rounded-full flex items-center justify-center shadow-[0_10px_25px_rgba(34,197,94,0.35)] z-10">
-                            <!-- SVG Tick (Drawn by GSAP) -->
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-[2.1rem] h-[2.1rem] sm:w-10 sm:h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path class="checkmark-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" style="stroke-dasharray: 24; stroke-dashoffset: 24;" />
                             </svg>
                         </div>
                     </div>
                     
-                    <!-- Modified Mobile Font Size to 32px, preserved sm/lg -->
-                    <h1 class="success-heading text-[32px] sm:text-[40px] lg:text-[40px] font-headingNew font-black mb-3 text-brandDark tracking-tight leading-none transform-gpu">
+                    <h1 class="success-heading text-[32px] sm:text-[36px] md:text-[40px] font-headingNew font-black mb-3 text-brandDark tracking-tight leading-none transform-gpu">
                         Thank <span class="text-brandGreen">You,</span>
                     </h1>
                     
-                    <!-- DYNAMIC NAME INSERTION WITH UPDATED STYLES (Modified mobile to 15px & 18px respectively, preserved sm) -->
                     <p class="success-subtitle text-gray-500 font-bodyNew text-[16px] sm:text-[17px] font-medium mb-6 transform-gpu">
                          for registering <span class="text-black text-[18px] sm:text-[19px] font-[700] underline decoration-brandYellow decoration-[3px] underline-offset-[4px]">Mr. <span id="display-name"></span></span>. You've got access to ARTIC Market.
                     </p>
                     
-                    <!-- Modified Mobile Font Size to 14px, preserved sm to previous default (13px) -->
-                    <div class="success-location-badge inline-flex items-center gap-2 px-4 py-2 bg-brandLightGray border border-gray-200 rounded-full text-[14px] sm:text-[14px] font-bold font-bodyNew tracking-wide text-gray-700 shadow-sm mb-10 transform-gpu">
-                        📍 Rajapalayam <span class="text-gray-300 font-normal mx-1">|</span> <span class="text-gray-500">Location Soon</span>
-                    </div>
+                    <!-- Location Badge (Injected via JS) -->
+                    <div class="success-location-badge inline-flex items-center gap-2 px-4 py-2 bg-brandLightGray border border-gray-200 rounded-full text-[14px] sm:text-[14px] font-bold font-bodyNew tracking-wide text-gray-700 shadow-sm mb-10 transform-gpu inject-location"></div>
                 </div>
 
-                <!-- Referral Offer Card - Structure modified for GSAP Parallax Animation -->
+                <!-- Referral Offer Card -->
                 <div id="reward-wrapper" class="referral-wrapper w-full overflow-hidden transform-gpu">
                     <div id="reward-inner" class="w-full">
                         <div class="bg-[#F9FAFB] border border-gray-100 rounded-[28px] p-6 sm:p-8 flex flex-col items-center relative shadow-[0_8px_30px_rgb(0,0,0,0.04)] mb-1.5 w-full">
@@ -642,7 +617,6 @@
                                 </svg>
                             </div>
                             
-                            <!-- Modified Mobile Font Size to 26px, preserved sm -->
                             <h2 class="font-headingNew font-black text-[26px] sm:text-[30px] text-brandDark mb-3 text-center leading-tight">
                                 Unlock Extra <span class="text-brandGreen relative z-10 inline-block whitespace-nowrap">10% OFF
                                     <svg class="absolute bottom-1 left-0 w-full h-3.5 -z-10 text-brandYellow" preserveAspectRatio="none" viewBox="0 0 100 10" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round">
@@ -655,14 +629,10 @@
                                 Share with <span class="font-bold text-brandGreen">10 friends & family</span> in Rajapalayam to unlock an exclusive discount.
                             </p>
                             
-                            <!-- Consolidated WhatsApp Button Styles (Identical for Step 3 & 4) -->
-                            <a href="#" onclick="shareOnWhatsApp(event)" class="whatsapp-btn">
-                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51h-.57c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                                Share on WhatsApp
-                            </a>
+                            <!-- WhatsApp Button (Injected via JS) -->
+                            <div class="inject-whatsapp w-full"></div>
                         </div>
                         
-                        <!-- Modified Mobile Font Size to 13px, preserved sm to previous default (14px) -->
                         <a href="https://articmarket.com" class="skip-link flex items-center justify-center gap-1.5 w-max mx-auto text-[13px] sm:text-[14px] font-bold text-slate-500 uppercase tracking-[0.06em] hover:text-slate-800 hover:underline transition-all duration-300 group p-2">
                             Skip to website
                             <svg class="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
@@ -675,48 +645,30 @@
             <!-- ================= STEP 4: ALREADY REGISTERED PAGE ================= -->
             <div id="step4-panel" class="w-full max-w-[520px] h-full mx-auto flex-col justify-center items-center relative pt-[calc(3rem+env(safe-area-inset-top,0px))] lg:pt-4 pb-[env(safe-area-inset-bottom)] my-auto min-h-[70dvh] lg:min-h-full">
                 
-                <!-- NEW Days Left Countdown UI (Functionality & Position Preserved from Step 3) -->
-                <div class="step4-anim countdown-popup absolute -top-[0.1rem] -left-[0.5rem] lg:-top-2 lg:-left-4 z-50 transform-gpu">
-                    <div class="clock-anim">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <path class="clock-hand" d="M12 6v6l3 3"></path>
-                        </svg>
-                    </div>
-                    <span><span class="days-count-val">0</span> Days Left</span>
-                </div>
+                <!-- NEW Days Left Countdown UI (Injected via JS) -->
+                <div class="step4-anim countdown-popup absolute -top-[0.1rem] -left-[0.5rem] lg:-top-2 lg:-left-4 z-50 transform-gpu inject-countdown"></div>
 
-                <!-- NEW ICON: User with Tick SVG Icon (PULSE RING REMOVED) -->
+                <!-- NEW ICON -->
                 <div class="step4-anim relative mb-5 sm:mb-6">
-                    <!-- Yellow Gradient Circle Container -->
                     <div class="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-[#facc15] to-[#eab308] rounded-full flex items-center justify-center shadow-[0_10px_25px_rgba(250,204,21,0.35)] relative z-10">
-                        
-                        <!-- User with Tick SVG Icon -->
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 sm:h-10 sm:w-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <!-- User Silhouette -->
                             <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
                             <circle cx="9" cy="7" r="4"></circle>
-                            <!-- Checkmark Tick next to user -->
                             <polyline points="16 11 18 13 22 9"></polyline>
                         </svg>
-
                     </div>
                 </div>
 
-                <!-- Main Heading -->
                 <h1 class="step4-anim text-[32px] sm:text-[36px] font-headingNew font-black text-[#0f1a0d] mb-3 text-center leading-tight tracking-tight">
                     You've already <span class="text-[#eab308]">Registered!</span>
                 </h1>
 
-                <!-- Subtext -->
                 <p class="step4-anim font-bodyNew text-[15px] sm:text-[16px] text-gray-500 text-center mb-6 max-w-[340px] leading-relaxed">
                     We will notify you the exact location soon
                 </p>
 
-                <!-- Location Badge -->
-                <div class="step4-anim inline-flex items-center gap-2 px-5 py-2.5 bg-[#f8faf8] border border-slate-200 rounded-[40px] text-[14px] font-bold font-bodyNew text-slate-700 shadow-sm mb-10">
-                    📍 Rajapalayam <span class="text-slate-300 font-normal mx-1">—</span> <span class="text-slate-500">Location Soon</span>
-                </div>
+                <!-- Location Badge (Injected via JS) -->
+                <div class="step4-anim inline-flex items-center gap-2 px-4 py-2 bg-[#f8faf8] border border-gray-200 rounded-full text-[14px] font-bold font-bodyNew text-gray-700 shadow-sm mb-10 inject-location"></div>
 
                 <!-- Referral Card -->
                 <div class="step4-anim w-full bg-[#f9fafb] border border-gray-100 rounded-[24px] p-6 sm:p-8 flex flex-col items-center relative shadow-[0_8px_30px_rgb(0,0,0,0.04)] mb-5">
@@ -729,11 +681,8 @@
                         Invite 10 friends & family in Rajapalayam to unlock an exclusive <span class="font-bold text-[#22c55e]">10% discount!</span>
                     </p>
                     
-                    <!-- Consolidated WhatsApp Button Styles (Identical for Step 3 & 4) -->
-                    <a href="#" onclick="shareOnWhatsApp(event)" class="whatsapp-btn">
-                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51h-.57c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                        Share on WhatsApp
-                    </a>
+                    <!-- WhatsApp Button (Injected via JS) -->
+                    <div class="inject-whatsapp w-full"></div>
                 </div>
                 
                 <a href="https://articmarket.com" class="step4-anim flex items-center justify-center gap-1.5 w-max mx-auto text-[14px] font-bold text-slate-500 uppercase tracking-[0.06em] hover:text-slate-800 hover:underline transition-all duration-300 p-2">
@@ -749,6 +698,39 @@
     <!-- Interactions & Animations -->
     <script>
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        // ========================================================
+        // --- SHARED HTML COMPONENTS (Injected dynamically) ---
+        // ========================================================
+        const UI_COMPONENTS = {
+            whatsappBtn: `
+                <a href="#" class="whatsapp-btn share-whatsapp-btn">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51h-.57c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                    Share on WhatsApp
+                </a>
+            `,
+            countdownInner: `
+                <div class="clock-anim">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path class="clock-hand" d="M12 6v6l3 3"></path>
+                    </svg>
+                </div>
+                <span><span class="days-count-val">0</span> Days Left</span>
+            `,
+            locationInner: `
+                📍 Rajapalayam <span class="text-gray-300 font-normal mx-1">|</span> <span class="text-gray-500">Location Soon</span>
+            `
+        };
+
+        function injectSharedComponents() {
+            // Replaces the entire placeholder div with the anchor tag
+            document.querySelectorAll('.inject-whatsapp').forEach(el => el.outerHTML = UI_COMPONENTS.whatsappBtn);
+            
+            // Injects the inner contents into the wrapper divs
+            document.querySelectorAll('.inject-countdown').forEach(el => el.innerHTML = UI_COMPONENTS.countdownInner);
+            document.querySelectorAll('.inject-location').forEach(el => el.innerHTML = UI_COMPONENTS.locationInner);
+        }
 
         // ==========================================
         // WhatsApp Share Logic
@@ -787,12 +769,18 @@
 
         // Cover Page (Step 1) Initial Setup
         window.addEventListener('DOMContentLoaded', () => {
-            // Initialize the dynamic countdown timer on page load
+            
+            // 1. Inject Reused HTML Components First!
+            injectSharedComponents();
+
+            // 2. Initialize the dynamic countdown timer on page load
             initCountdown();
 
             // If already registered, skip the intro animations completely
             // as CSS handles displaying Step 4 instantly with its own animation.
             if (document.documentElement.classList.contains('is-already-registered')) {
+                // Must still bind WhatsApp listeners if they bypassed standard logic
+                document.querySelectorAll('.share-whatsapp-btn').forEach(btn => btn.addEventListener('click', shareOnWhatsApp));
                 return;
             }
 
@@ -802,6 +790,8 @@
             if (prefersReducedMotion) {
                 gsap.set('#step1-panel, .intro-stagger', { opacity: 1, clearProps: 'transform' });
                 document.getElementById('registered-count').innerText = '2,564';
+                // Bind WhatsApp listeners here too for reduced motion users
+                document.querySelectorAll('.share-whatsapp-btn').forEach(btn => btn.addEventListener('click', shareOnWhatsApp));
                 return;
             }
 
@@ -830,6 +820,45 @@
                         setTimeout(() => this.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
                     }
                 });
+            });
+
+            // Phone Input formatting and validation
+            const phoneInput = document.getElementById('phone');
+            const phoneCheck = document.getElementById('phone-check');
+            if (phoneInput && phoneCheck) {
+                phoneInput.addEventListener('input', function() {
+                    this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);
+                    
+                    // Production phone validation: 
+                    // 1. Must be exactly 10 digits
+                    // 2. Must start with 6, 7, 8, or 9 (Indian mobile numbers)
+                    // 3. Cannot be all repeating digits (e.g., 9999999999)
+                    const isValidPhone = this.value.length === 10 && 
+                                         /^[6-9]/.test(this.value) && 
+                                         !/^(\d)\1{9}$/.test(this.value);
+                    
+                    phoneCheck.classList.toggle('visible', isValidPhone);
+                    
+                    // Native HTML5 validation API so the form prevents submission
+                    if (this.value.length === 10 && !isValidPhone) {
+                        this.setCustomValidity("Please enter a valid 10-digit phone number.");
+                    } else {
+                        this.setCustomValidity("");
+                    }
+                });
+            }
+
+            // Register Now Button (Step 1 -> 2)
+            const btnShowForm = document.getElementById('btn-show-form');
+            if (btnShowForm) btnShowForm.addEventListener('click', showForm);
+
+            // Back Button (Step 2 -> 1)
+            const btnBackCover = document.getElementById('btn-back-cover');
+            if (btnBackCover) btnBackCover.addEventListener('click', showCover);
+
+            // WhatsApp Share Buttons
+            document.querySelectorAll('.share-whatsapp-btn').forEach(btn => {
+                btn.addEventListener('click', shareOnWhatsApp);
             });
         });
 
