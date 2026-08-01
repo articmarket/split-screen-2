@@ -37,6 +37,28 @@
         }
     </script>
 
+    <!-- Mobile Viewport Height Stabilizer -->
+    <script>
+        // Calculates a stable viewport height unit to prevent mobile scroll jumps
+        function setStableViewport() {
+            const vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+        }
+        
+        // Initial setup
+        setStableViewport();
+        
+        // Recalculate ONLY on horizontal resize (orientation change)
+        // This prevents the address bar show/hide from triggering vertical layout jumps
+        let stableWidth = window.innerWidth;
+        window.addEventListener('resize', () => {
+            if (window.innerWidth !== stableWidth) {
+                stableWidth = window.innerWidth;
+                setStableViewport();
+            }
+        });
+    </script>
+
     <!-- GSAP for Smooth Animations -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     
@@ -49,6 +71,7 @@
             --green: #16a34a; 
             --green-light: #22c55e;
             --ink: #0f1a0d;
+            --vh: 1vh; /* Fallback */
         }
 
         body, html {
@@ -111,11 +134,11 @@
             }
 
             .step-2-active #right-content {
-                /* Transform translates it cleanly to the top without recalculating the DOM box model */
-                transform: translateY(calc(-42dvh + 40px)) !important;
-                margin-bottom: calc(-42dvh + 40px) !important; /* Removes phantom scrollable space at bottom */
+                /* Transform translates it cleanly to the top using our stable --vh variable */
+                transform: translateY(calc((var(--vh, 1vh) * -42) + 40px)) !important;
+                margin-bottom: calc((var(--vh, 1vh) * -42) + 40px) !important; /* Removes phantom scrollable space at bottom */
                 border-radius: 0 !important;
-                min-height: 100dvh !important;
+                min-height: calc(var(--vh, 1vh) * 100) !important;
                 min-height: -webkit-fill-available !important;
                 padding-top: max(1.5rem, env(safe-area-inset-top)) !important;
                 padding-bottom: max(1.5rem, env(safe-area-inset-bottom)) !important;
@@ -125,12 +148,12 @@
 
             /* Adjustments specific to Already Registered State (Flexbox Split for responsiveness) */
             .is-already-registered #left-visual {
-                min-height: 30dvh !important;
+                min-height: calc(var(--vh, 1vh) * 30) !important;
                 height: auto !important;
             }
             .is-already-registered #right-content {
                 flex-grow: 1 !important;
-                min-height: 70dvh !important;
+                min-height: calc(var(--vh, 1vh) * 70) !important;
             }
         }
 
@@ -143,14 +166,19 @@
             padding: 0.65rem 0.65rem 0.65rem 2.25rem; border-radius: 9999px;
             font-size: 0.95rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
             border: none; cursor: pointer; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .btn-cover:hover { 
-            background-color: #1f1f1f;
-            transform: translateY(-2px);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2); 
+            transform: scale(1.04); 
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25), 0 0 0 6px rgba(0, 0, 0, 0.05) !important; 
         }
-        .btn-cover:active { transform: translateY(1px); }
+        .btn-cover:active { transform: scale(0.98); }
+        .btn-cover::before {
+            content: ''; position: absolute; top: 0; left: -150%; width: 150%; height: 100%;
+            background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.15) 50%, transparent 100%);
+            transform: skewX(-20deg); transition: left 0.7s cubic-bezier(0.16, 1, 0.3, 1); z-index: 0;
+        }
+        .btn-cover:hover::before { left: 150%; }
         
         .arrow-cover {
             position: relative; z-index: 1; display: flex; align-items: center; justify-content: center;
@@ -381,10 +409,10 @@
 </head>
 <body class="text-dark bg-white overflow-x-hidden">
 
-    <main class="flex flex-col lg:flex-row min-h-[100dvh] w-full relative">
+    <main class="flex flex-col lg:flex-row min-h-[calc(var(--vh,1vh)*100)] w-full relative">
         
         <!-- ================= LEFT SIDE (VISUAL) ================= -->
-        <section id="left-visual" class="relative w-full lg:w-[55%] h-[42dvh] min-h-[250px] lg:h-[100dvh] lg:min-h-0 overflow-hidden flex-shrink-0 z-0 bg-gray-900 transition-all duration-300">
+        <section id="left-visual" class="relative w-full lg:w-[55%] h-[calc(var(--vh,1vh)*42)] min-h-[250px] lg:h-[calc(var(--vh,1vh)*100)] lg:min-h-0 overflow-hidden flex-shrink-0 z-0 bg-gray-900 transition-all duration-300">
             <!-- Static Background Image -->
             <div class="absolute inset-0 w-full h-full">
                 <div class="w-full h-full bg-[url('https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center"></div>
@@ -416,7 +444,7 @@
                         <div class="w-10 h-10 rounded-full bg-green-50 border border-green-100 flex items-center justify-center text-green-600 shrink-0">
                             <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
                         </div>
-                        <span class="font-bodyNew text-[12px] font-bold tracking-[0.15em] uppercase text-gray-800">Form</span>
+                        <span class="font-bodyNew text-[13px] font-bold tracking-[0.15em] uppercase text-gray-800">Form</span>
                     </div>
                     <div class="inline-flex items-center justify-center gap-1.5 font-bodyNew text-[12px] font-bold text-gray-700 tracking-widest uppercase bg-gray-50 border border-gray-200 rounded-full px-3.5 py-1.5 shrink-0">
                         📍 Rajapalayam
@@ -575,7 +603,7 @@
             </div>
 
             <!-- ================= STEP 3: SUCCESS PAGE ================= -->
-            <div id="step3-panel" class="hidden w-full max-w-[520px] h-full mx-auto flex-col justify-center items-center relative pt-[calc(3rem+env(safe-area-inset-top,0px))] lg:pt-4 pb-[env(safe-area-inset-bottom)] my-auto min-h-[70dvh] lg:min-h-full">
+            <div id="step3-panel" class="hidden w-full max-w-[520px] h-full mx-auto flex-col justify-center items-center relative pt-[calc(3rem+env(safe-area-inset-top,0px))] lg:pt-4 pb-[env(safe-area-inset-bottom)] my-auto min-h-[calc(var(--vh,1vh)*70)] lg:min-h-full">
                 
                 <!-- Countdown Badge Component Slot -->
                 <div class="countdown-badge countdown-popup absolute -top-[0.1rem] -left-[0.5rem] lg:-top-2 lg:-left-4 z-50 opacity-0 transform-gpu inject-countdown" id="countdown-badge"></div>
@@ -646,7 +674,7 @@
             </div>
 
             <!-- ================= STEP 4: ALREADY REGISTERED PAGE ================= -->
-            <div id="step4-panel" class="w-full max-w-[520px] h-full mx-auto flex-col justify-center items-center relative pt-[calc(3rem+env(safe-area-inset-top,0px))] lg:pt-4 pb-[env(safe-area-inset-bottom)] my-auto min-h-[70dvh] lg:min-h-full">
+            <div id="step4-panel" class="w-full max-w-[520px] h-full mx-auto flex-col justify-center items-center relative pt-[calc(3rem+env(safe-area-inset-top,0px))] lg:pt-4 pb-[env(safe-area-inset-bottom)] my-auto min-h-[calc(var(--vh,1vh)*70)] lg:min-h-full">
                 
                 <!-- NEW Days Left Countdown UI (Injected via JS) -->
                 <div class="step4-anim countdown-popup absolute -top-[0.1rem] -left-[0.5rem] lg:-top-2 lg:-left-4 z-50 transform-gpu inject-countdown"></div>
@@ -701,6 +729,12 @@
     <!-- Interactions & Animations -->
     <script>
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        
+        // ==========================================
+        // Transition Lock & Master Timeline Manager
+        // ==========================================
+        let isTransitioning = false;
+        let pageTransitionTimeline = null;
 
         // ==========================================
         // --- SHARED HTML COMPONENTS (Injected dynamically) ---
@@ -780,14 +814,12 @@
             initCountdown();
 
             // If already registered, skip the intro animations completely
-            // as CSS handles displaying Step 4 instantly with its own animation.
             if (document.documentElement.classList.contains('is-already-registered')) {
                 // Must still bind WhatsApp listeners if they bypassed standard logic
                 document.querySelectorAll('.share-whatsapp-btn').forEach(btn => btn.addEventListener('click', shareOnWhatsApp));
                 return;
             }
 
-            const tl = gsap.timeline();
             const isMobile = window.matchMedia('(max-width: 1023px)').matches;
 
             if (prefersReducedMotion) {
@@ -798,20 +830,28 @@
                 return;
             }
 
+            // Lock transitions to avoid user interruption while the initial page load animation completes
+            isTransitioning = true; 
+
             gsap.set('#step1-panel', isMobile ? { opacity: 0 } : { opacity: 0, y: 30 });
             gsap.set('.intro-stagger', { opacity: 0, y: 20 });
 
-            tl.to('#step1-panel',
+            if (pageTransitionTimeline) pageTransitionTimeline.kill();
+            pageTransitionTimeline = gsap.timeline({
+                onComplete: () => { isTransitioning = false; }
+            });
+
+            pageTransitionTimeline.to('#step1-panel',
                 isMobile
                     ? { opacity: 1, duration: 1.0, ease: 'power3.out' }
                     : { opacity: 1, y: 0, duration: 1.0, ease: 'power3.out', clearProps: 'transform' },
                 0.2
             );
 
-            tl.to('.intro-stagger', { opacity: 1, y: 0, duration: 0.8, stagger: 0.1, ease: 'power3.out', clearProps: 'transform' }, 0.5);
+            pageTransitionTimeline.to('.intro-stagger', { opacity: 1, y: 0, duration: 0.8, stagger: 0.1, ease: 'power3.out', clearProps: 'transform' }, 0.5);
 
             const countObj = { val: 0 };
-            tl.to(countObj, {
+            pageTransitionTimeline.to(countObj, {
                 val: 2564, duration: 2.0, ease: "power3.out",
                 onUpdate: () => document.getElementById('registered-count').innerText = Math.round(countObj.val).toLocaleString()
             }, 0.7);
@@ -832,17 +872,12 @@
                 phoneInput.addEventListener('input', function() {
                     this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);
                     
-                    // Production phone validation: 
-                    // 1. Must be exactly 10 digits
-                    // 2. Must start with 6, 7, 8, or 9 (Indian mobile numbers)
-                    // 3. Cannot be all repeating digits (e.g., 9999999999)
                     const isValidPhone = this.value.length === 10 && 
                                          /^[6-9]/.test(this.value) && 
                                          !/^(\d)\1{9}$/.test(this.value);
                     
                     phoneCheck.classList.toggle('visible', isValidPhone);
                     
-                    // Native HTML5 validation API so the form prevents submission
                     if (this.value.length === 10 && !isValidPhone) {
                         this.setCustomValidity("Please enter a valid 10-digit phone number.");
                     } else {
@@ -867,47 +902,87 @@
 
         // Flow Functions
         function showForm() {
+            // Master Transition Lock Preventer
+            if (isTransitioning) return;
+            isTransitioning = true;
+
+            const btn = document.getElementById('btn-show-form');
+            if (btn) {
+                btn.style.pointerEvents = 'none';
+                btn.style.opacity = '0.7';
+            }
+
             if (prefersReducedMotion) {
                 togglePanels(1, 2);
+                if (btn) { btn.style.pointerEvents = ''; btn.style.opacity = ''; }
+                isTransitioning = false;
                 return;
             }
 
+            if (pageTransitionTimeline) pageTransitionTimeline.kill();
+
+            pageTransitionTimeline = gsap.timeline({
+                onComplete: () => {
+                    isTransitioning = false;
+                    if (btn) { btn.style.pointerEvents = ''; btn.style.opacity = ''; }
+                }
+            });
+
             const isMobile = window.matchMedia('(max-width: 1023px)').matches;
-            const tl = gsap.timeline();
             
             // Fade out Step 1
-            tl.to('.intro-stagger', { opacity: 0, y: -10, duration: 0.3, stagger: 0.05, ease: 'power2.in' })
+            pageTransitionTimeline.to('.intro-stagger', { opacity: 0, y: -10, duration: 0.3, stagger: 0.05, ease: 'power2.in' })
               .to('#step1-panel', { opacity: 0, duration: 0.2 }, "-=0.2")
               .call(() => togglePanels(1, 2));
               
             if (isMobile) {
-                tl.fromTo('#step2-panel', { opacity: 0 }, { opacity: 1, duration: 0.3 }, "+=0.35")
+                pageTransitionTimeline.fromTo('#step2-panel', { opacity: 0 }, { opacity: 1, duration: 0.3 }, "+=0.35")
                   .fromTo('.form-stagger', { opacity: 0, y: 16 }, { opacity: 1, y: 0, stagger: 0.08, duration: 0.55, ease: 'power2.out', clearProps: 'transform' }, "-=0.1");
             } else {
-                tl.fromTo('#step2-panel', { opacity: 0 }, { opacity: 1, duration: 0.3 })
+                pageTransitionTimeline.fromTo('#step2-panel', { opacity: 0 }, { opacity: 1, duration: 0.3 })
                   .fromTo('.form-stagger', { opacity: 0, y: 16 }, { opacity: 1, y: 0, stagger: 0.08, duration: 0.55, ease: 'power2.out', clearProps: 'transform' }, "-=0.1");
             }
         }
 
         function showCover() {
+            // Master Transition Lock Preventer
+            if (isTransitioning) return;
+            isTransitioning = true;
+
+            const btn = document.getElementById('btn-back-cover');
+            if (btn) {
+                btn.style.pointerEvents = 'none';
+                btn.style.opacity = '0.7';
+            }
+
             if (prefersReducedMotion) {
                 togglePanels(2, 1);
+                if (btn) { btn.style.pointerEvents = ''; btn.style.opacity = ''; }
+                isTransitioning = false;
                 return;
             }
 
+            if (pageTransitionTimeline) pageTransitionTimeline.kill();
+
+            pageTransitionTimeline = gsap.timeline({
+                onComplete: () => {
+                    isTransitioning = false;
+                    if (btn) { btn.style.pointerEvents = ''; btn.style.opacity = ''; }
+                }
+            });
+
             const isMobile = window.matchMedia('(max-width: 1023px)').matches;
-            const tl = gsap.timeline();
             
             // Fade out Step 2
-            tl.to('.form-stagger', { opacity: 0, y: 10, duration: 0.3, stagger: 0.05, ease: 'power2.in' })
+            pageTransitionTimeline.to('.form-stagger', { opacity: 0, y: 10, duration: 0.3, stagger: 0.05, ease: 'power2.in' })
               .to('#step2-panel', { opacity: 0, duration: 0.2 }, "-=0.2")
               .call(() => togglePanels(2, 1));
               
             if (isMobile) {
-                tl.fromTo('#step1-panel', { opacity: 0 }, { opacity: 1, duration: 0.3 }, "+=0.35")
+                pageTransitionTimeline.fromTo('#step1-panel', { opacity: 0 }, { opacity: 1, duration: 0.3 }, "+=0.35")
                   .fromTo('.intro-stagger', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: 'power3.out', clearProps: 'transform' }, "-=0.1");
             } else {
-                tl.fromTo('#step1-panel', { opacity: 0 }, { opacity: 1, duration: 0.3 })
+                pageTransitionTimeline.fromTo('#step1-panel', { opacity: 0 }, { opacity: 1, duration: 0.3 })
                   .fromTo('.intro-stagger', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: 'power3.out', clearProps: 'transform' }, "-=0.1");
             }
         }
@@ -937,6 +1012,10 @@
         // Submitting Animation Logic
         document.querySelector('form').addEventListener('submit', function(e) {
             e.preventDefault();
+            
+            // Master Transition Lock Preventer for Form Submits
+            if (isTransitioning) return;
+            isTransitioning = true;
 
             // Set dynamic user name to display on the Thank You page
             const userName = document.getElementById('name').value;
@@ -953,7 +1032,10 @@
             btnText.textContent = 'Submitting...';
             btnArrow.style.display = 'none';
             btnSpinner.classList.remove('hidden');
+            
+            // Disable interactions visually
             btn.style.pointerEvents = 'none';
+            btn.style.opacity = '0.7';
 
             // Simulate slight delay to let the animation play out visually before firing the success transition
             setTimeout(() => {
@@ -972,44 +1054,51 @@
                 gsap.set('#reward-wrapper', { height: 'auto', opacity: 1 });
                 gsap.set('#reward-inner', { y: 0 });
                 triggerConfetti();
+                isTransitioning = false; // Release lock
                 return;
             }
 
-            const tl = gsap.timeline();
+            if (pageTransitionTimeline) pageTransitionTimeline.kill();
+
+            pageTransitionTimeline = gsap.timeline({
+                onComplete: () => {
+                    isTransitioning = false; // Release lock completely
+                }
+            });
 
             // Setup for the dynamic Parallax Reveal
             gsap.set('#reward-wrapper', { height: 0, opacity: 0 });
             gsap.set('#reward-inner', { y: -40 }); // Parallax start position
 
             // Fade out Step 2 form gently
-            tl.to('.form-stagger', { opacity: 0, y: -10, duration: 0.3, stagger: 0.05, ease: 'power2.in' })
+            pageTransitionTimeline.to('.form-stagger', { opacity: 0, y: -10, duration: 0.3, stagger: 0.05, ease: 'power2.in' })
               .to('#step2-panel', { opacity: 0, duration: 0.2 }, "-=0.2")
               .call(() => {
                   togglePanels(2, 3);
               });
 
             // Step 1: Entire success container fades upward
-            tl.fromTo('#step3-panel',
+            pageTransitionTimeline.fromTo('#step3-panel',
                 { opacity: 0, y: 30 },
                 { opacity: 1, y: 0, duration: 1.2, ease: 'power4.out', clearProps: 'transform' },
                 "+=0.1"
             );
 
             // Step 3: Success Icon Background Pop In
-            tl.fromTo('.success-icon-circle',
+            pageTransitionTimeline.fromTo('.success-icon-circle',
                 { scale: 0 },
                 { scale: 1, duration: 0.6, ease: 'back.out(1.6)', clearProps: 'transform' },
                 "-=0.9"
             );
 
             // Tick drawing animation + trigger confetti right after
-            tl.to('.checkmark-path', 
+            pageTransitionTimeline.to('.checkmark-path', 
                 { strokeDashoffset: 0, duration: 0.35, ease: 'power2.out' },
                 "-=0.3"
             ).call(triggerConfetti);
 
             // Step 4: Stagger reveal text elements
-            tl.fromTo(['.success-heading', '.success-subtitle', '.success-location-badge'],
+            pageTransitionTimeline.fromTo(['.success-heading', '.success-subtitle', '.success-location-badge'],
                 { opacity: 0, y: 15 },
                 { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: 'power4.out', clearProps: 'transform' },
                 "-=0.15"
@@ -1018,24 +1107,24 @@
             // ==========================================
             // Step 5: Expand & Reveal Reward Card
             // ==========================================
-            tl.to({}, { duration: 1.0 })
+            pageTransitionTimeline.to({}, { duration: 1.0 })
               .addLabel("showReward");
 
             // Expand the wrapper (this naturally pushes the top content upward smoothly via flexbox)
-            tl.to("#reward-wrapper", { height: "auto", duration: 1.4, ease: "power4.inOut" }, "showReward")
+            pageTransitionTimeline.to("#reward-wrapper", { height: "auto", duration: 1.4, ease: "power4.inOut" }, "showReward")
               // The inner card slides down into place (Parallax effect)
               .to("#reward-inner", { y: 0, duration: 1.4, ease: "power4.inOut", clearProps: 'transform' }, "showReward")
               // Fade the wrapper in
               .to("#reward-wrapper", { opacity: 1, duration: 1.0, ease: "power2.out" }, "showReward+=0.4");
 
             // Highlight Marker draws left to right
-            tl.to('.marker-path',
+            pageTransitionTimeline.to('.marker-path',
                 { strokeDashoffset: 0, duration: 0.8, ease: 'power2.out' },
                 "showReward+=0.6"
             );
 
             // Step 7: Countdown badge scales in last
-            tl.fromTo('.countdown-badge',
+            pageTransitionTimeline.fromTo('.countdown-badge',
                 { opacity: 0, scale: 0.5 },
                 { opacity: 1, scale: 1, duration: 0.6, ease: 'back.out(1.6)', clearProps: 'transform' },
                 "showReward+=0.8"
